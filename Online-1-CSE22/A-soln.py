@@ -35,11 +35,13 @@ def interpolate_signal(
     # Find exact floating-point index for queried times
     idx_exact = (t_query - t_original[0]) / dt
     
-    # Get left and right nearest integer indices
+    # Force idx_left to be the integer directly to the left, 
+    # and idx_right to be the integer directly to the right.
     idx_left = np.floor(idx_exact).astype(int)
-    idx_right = np.ceil(idx_exact).astype(int)
+    idx_right = idx_left + 1
     
     # Identify values that fall within the original time range
+    # Note: since idx_right goes one step further, we check up to len-1
     valid_mask = (idx_exact >= 0) & (idx_exact <= len(t_original) - 1)
     
     # Clip indices to avoid out-of-bounds errors during array access
@@ -74,7 +76,9 @@ def plot_pair(t: np.ndarray, x: np.ndarray, y: np.ndarray, title: str):
     """
     plt.figure(figsize=(10, 5))
     plt.plot(t, x, label="x(t)", alpha=0.8)
-    plt.plot(t, y, label="y(t)", linestyle="--", linewidth=2)
+    plt.plot(t, y, label="y(t)", linestyle="--", linewidth=1)
+    plt.axhline(0, color='black')
+    plt.axvline(0, color='black')
     plt.title(title)
     plt.xlabel("t")
     plt.ylabel("Amplitude")
