@@ -1,0 +1,109 @@
+Input file: inputs/3.txt
+
+Impulse response: custom impulse response
+=========================================
+Input signal x[n]:
+  n =  -15, value =     0.9900
+  n =  -14, value =    -0.2800
+  n =  -13, value =     1.3000
+  n =  -12, value =     3.0500
+  n =  -11, value =    -0.4700
+  n =  -10, value =    -0.4700
+  n =   -9, value =     3.1600
+  n =   -8, value =     1.5300
+  n =   -7, value =    -0.9400
+  n =   -6, value =     1.0900
+  n =   -5, value =    -0.9300
+  n =   -4, value =    -0.9300
+  n =   -3, value =     0.4800
+  n =   -2, value =    -3.8300
+  n =   -1, value =    -3.4500
+  n =    0, value =    -1.1200
+  n =    1, value =    -2.0300
+  n =    2, value =     0.6300
+  n =    3, value =    -1.8200
+  n =    4, value =    -2.8200
+  n =    5, value =     2.9300
+  n =    6, value =    -0.4500
+  n =    7, value =     0.1400
+  n =    8, value =    -2.8500
+  n =    9, value =    -1.0900
+  n =   10, value =     0.2200
+  n =   11, value =    -2.3000
+  n =   12, value =     0.7500
+  n =   13, value =    -1.2000
+  n =   14, value =    -0.5800
+  n =   15, value =    -1.2000
+  n =   16, value =     3.7000
+  n =   17, value =    -0.0300
+  n =   18, value =    -2.1200
+  n =   19, value =     1.6500
+  n =   20, value =    -2.4400
+  n =   21, value =     0.4200
+  n =   22, value =    -3.9200
+  n =   23, value =    -2.6600
+  n =   24, value =     0.3900
+
+Impulse response h[n]:
+  n =   -3, value =     1.0000
+  n =   -2, value =     0.5000
+  n =   -1, value =    -0.2000
+  n =    0, value =     0.3000
+  n =    1, value =     0.1000
+  n =    2, value =    -0.4000
+  n =    3, value =     0.2000
+
+Output signal y[n]:
+  n =  -18, value =     0.9900
+  n =  -17, value =     0.2150
+  n =  -16, value =     0.9620
+  n =  -15, value =     4.0530
+  n =  -14, value =     0.8100
+  n =  -13, value =    -1.3490
+  n =  -12, value =     4.3740
+  n =  -11, value =     2.7920
+  n =  -10, value =    -1.9550
+  n =   -9, value =     2.0130
+  n =   -8, value =     0.6720
+  n =   -7, value =    -3.1000
+  n =   -6, value =     0.4540
+  n =   -5, value =    -2.8920
+  n =   -4, value =    -6.4570
+  n =   -3, value =    -1.4380
+  n =   -2, value =    -2.8150
+  n =   -1, value =    -1.9570
+  n =    0, value =    -0.1520
+  n =    1, value =    -3.9630
+  n =    2, value =     1.6280
+  n =    3, value =     1.6840
+  n =    4, value =    -2.3570
+  n =    5, value =    -1.2390
+  n =    6, value =    -1.6210
+  n =    7, value =    -1.4940
+  n =    8, value =    -2.0470
+  n =    9, value =    -1.2020
+  n =   10, value =     0.7600
+  n =   11, value =    -2.1320
+  n =   12, value =    -1.5610
+  n =   13, value =     3.8950
+  n =   14, value =     1.0060
+  n =   15, value =    -2.6630
+  n =   16, value =     1.5780
+  n =   17, value =    -0.4660
+  n =   18, value =    -3.4890
+  n =   19, value =    -2.1870
+  n =   20, value =    -4.4290
+  n =   21, value =    -1.3580
+  n =   22, value =     0.8990
+  n =   23, value =    -1.9240
+  n =   24, value =     1.5030
+  n =   25, value =     0.3190
+  n =   26, value =    -0.6880
+  n =   27, value =     0.0780
+
+Verification
+Output range: [-18, 27]
+Maximum absolute difference between two methods: 0
+
+Stem plot: outputs/3/plot/convolution.png
+Color plot: outputs/3/color/convolution.png
