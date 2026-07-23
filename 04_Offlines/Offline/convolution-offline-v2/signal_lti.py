@@ -84,7 +84,12 @@ class DiscreteSignal:
     # Returns: list of (time_index, value) tuples for samples with abs(value) > tolerance.
     # Example: values [1, 0, 3] starting at n = 0 should return [(0, 1), (2, 3)].
     def nonzero_samples(self, tolerance=1e-12):
-        
+        result = []
+        for t in self.times():
+            val = self.get_value_at_time(t)
+            if abs(val)>tolerance:
+                result.append((t, val))
+        return result
 
     def plot(self, title, save_path=None, ax=None):
         import matplotlib.pyplot as plt
@@ -119,13 +124,13 @@ class LTISystem:
     # Output: None; store the impulse response that defines this LTI system.
     # Example: LTISystem(impulse_identity()) creates the identity system.
     def __init__(self, impulse_response):
-        raise NotImplementedError("Complete the LTISystem constructor")
+        self.impulse_response = impulse_response
 
     # Arguments: input_signal is a DiscreteSignal representing x[n].
     # Returns: (start, end) tuple for the convolution output y[n].
     # Example: x over 0..4 and h over 0..2 produce output range (0, 6).
     def output_range(self, input_signal):
-        raise NotImplementedError("Complete output_range")
+        return (input_signal.start_time + self.impulse_response.start_time, input_signal.end_time + self.impulse_response.end_time)
 
     # Arguments: input_signal is a DiscreteSignal representing x[n].
     # Returns: list of (k, component_signal) for each nonzero input sample x[k].
