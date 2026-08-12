@@ -35,8 +35,12 @@ class FourierEpicycles:
                            n -> c_n once calculate_all_coefficients() has
                            been called
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement __init__")
+        self.t = t
+        self.signal = signal
+        self.N = n_harmonics
+        self.T = t[-1]-t[0]
+        self.omega = 2*np.pi/self.T
+        self.coeffs = {}
 
     def calculate_cn(self, n):
         """
