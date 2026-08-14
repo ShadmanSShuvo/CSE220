@@ -62,7 +62,7 @@ class FourierEpicycles:
         n = -N, ..., -1, 0, 1, ..., N by repeatedly calling calculate_cn(n).
         """
         for n in range(-self.N, self.N+1):
-            self.coeffs[n] = self.calculate_cn[n]
+            self.coeffs[n] = self.calculate_cn(n)
 
     def approximate(self, t):
         """

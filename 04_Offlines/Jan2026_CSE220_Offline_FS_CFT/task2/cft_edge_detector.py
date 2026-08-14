@@ -67,8 +67,28 @@ class CFT2D:
         -------
         real, imag : two 2D numpy arrays, each of shape self.I.shape
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement CFT2D.compute_cft")
+        Ny, Nx = self.I.shape
+        Nv, Nu = len(self.v), len(self.u)
+
+        # Stage 1: integrate over x, for every row y and every candidate u.
+        stage1_cos = np.empty((Ny, Nu))
+        stage1_sin = np.empty((Ny, Nu))
+        for k, uk in enumerate(self.u):
+            phase = 2 * np.pi * uk * self.x
+            stage1_cos[:, k] = np.trapezoid(self.I * np.cos(phase)[None, :], self.x, axis=1)
+            stage1_sin[:, k] = np.trapezoid(self.I * np.sin(phase)[None, :], self.x, axis=1)
+
+        # Stage 2: integrate over y, for every candidate v (u already handled above).
+        real = np.empty((Nv, Nu))
+        imag = np.empty((Nv, Nu))
+        for m, vm in enumerate(self.v):
+            phase = 2 * np.pi * vm * self.y
+            cos_vy = np.cos(phase)[:, None]
+            sin_vy = np.sin(phase)[:, None]
+            real[m, :] = np.trapezoid(stage1_cos * cos_vy - stage1_sin * sin_vy, self.y, axis=0)
+            imag[m, :] = -np.trapezoid(stage1_sin * cos_vy + stage1_cos * sin_vy, self.y, axis=0)
+
+        return real, imag
 
     def plot_magnitude(self):
         """
@@ -77,8 +97,12 @@ class CFT2D:
         magnitude = sqrt(real**2 + imag**2). Purely for your own visual
         debugging -- not called by the command-line entry point below.
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement CFT2D.plot_magnitude")
+        real, imag = self.compute_cft()
+        magnitude = np.sqrt(real ** 2 + imag ** 2)
+        plt.imshow(np.log(1 + magnitude), cmap='gray')
+        plt.title('2D CFT Magnitude Spectrum (log-scaled)')
+        plt.axis('off')
+        plt.show()
 
 
 class FrequencyFilter:
@@ -136,8 +160,33 @@ class InverseCFT2D:
             has been removed) -- see the command-line entry point below
             for how it gets turned into a displayable edge map.
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement InverseCFT2D.reconstruct")
+        rows, cols = self.real.shape
+
+        P = np.zeros((cols, rows))
+        Q = np.zeros((cols, rows))
+
+        cos_vy = np.cos(2 * np.pi * self.y[:, None] * self.v[None, :])
+        sin_vy = np.sin(2 * np.pi * self.y[:, None] * self.v[None, :])
+
+        for iu in range(cols):
+            R_u = self.real[:, iu]
+            Q_u = self.imag[:, iu]
+
+            P[iu, :] = np.trapezoid(R_u[None, :] * cos_vy - Q_u[None, :] * sin_vy,self.v,axis=1)
+            Q[iu, :] = np.trapezoid(R_u[None, :] * sin_vy + Q_u[None, :] * cos_vy,self.v,axis=1)
+
+        image = np.zeros((rows, cols))
+
+        cos_ux = np.cos(2 * np.pi * self.x[:, None] * self.u[None, :])
+        sin_ux = np.sin(2 * np.pi * self.x[:, None] * self.u[None, :])
+
+        for iy in range(rows):
+            P_y = P[:, iy]
+            Q_y = Q[:, iy]
+
+            image[iy, :] = np.trapezoid(P_y[None, :] * cos_ux- Q_y[None, :] * sin_ux,self.u,axis=1)
+        return image
+
 
 
 # =====================================================
