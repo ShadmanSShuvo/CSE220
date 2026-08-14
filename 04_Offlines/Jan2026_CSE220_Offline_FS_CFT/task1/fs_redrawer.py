@@ -52,16 +52,17 @@ class FourierEpicycles:
 
         n may be zero, positive, or negative.
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement calculate_cn")
+        exp_term = np.exp(-1j * n * self.omega * self.t)
+        int_this = self.signal * exp_term
+        return (1.0 / self.T) * np.trapezoid(int_this, self.t)
 
     def calculate_all_coefficients(self):
         """
         Step 3: Populate self.coeffs with c_n for every harmonic
         n = -N, ..., -1, 0, 1, ..., N by repeatedly calling calculate_cn(n).
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement calculate_all_coefficients")
+        for n in range(-self.N, self.N+1):
+            self.coeffs[n] = self.calculate_cn[n]
 
     def approximate(self, t):
         """
@@ -74,8 +75,13 @@ class FourierEpicycles:
         implementation must support both, since the provided
         plotting/animation code calls this both ways.
         """
-        # TODO: implement this method
-        raise NotImplementedError("Implement approximate")
+        t = np.atleast_1d(t)
+        result = np.zeros(len(t), dtype=complex)
+        for n in self.coeffs:
+            result += self.coeffs[n] * np.exp(1j * n * self.omega * t)
+        if len(t) == 1:
+            return result[0]
+        return result
 
 
 if __name__ == "__main__":
