@@ -2,3 +2,7 @@ python3 fs_redrawer.py svgs/heart.svg 150 heart_comparison.png heart_epicycles.g
 python3 fs_redrawer.py svgs/circle.svg 150 circle_comparison.png circle_epicycles.gif
 python3 fs_redrawer.py svgs/star.svg 150 star_comparison.png star_epicycles.gif
 python3 fs_redrawer.py svgs/infinity.svg 150 infinity_comparison.png infinity_epicycles.gif
+python3 fs_redrawer.py svgs/s.svg 150 s_comparison.png s_epicycles.gif
+python3 fs_redrawer.py svgs/ss.svg 150 ss_comparison.png ss_epicycles.gif
+python3 fs_redrawer.py svgs/sss.svg 150 sss_comparison.png sss_epicycles.gif
+python3 fs_redrawer.py svgs/shuvo.svg 150 shuvo_comparison.png shuvo_epicycles.gif
