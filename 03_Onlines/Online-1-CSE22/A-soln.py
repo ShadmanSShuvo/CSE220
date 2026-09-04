@@ -1,0 +1,109 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ----------------------------
+# Time axis
+# ----------------------------
+T_MIN, T_MAX, N = -4.0, 4.0, 4001
+
+
+def x_of_t(t: np.ndarray) -> np.ndarray:
+    """
+    Base signal x(t): sinusoidal signal
+    """
+    return (
+        np.sin(2 * np.pi * 0.5 * t)
+        + 0.5 * np.sin(2 * np.pi * 1.5 * t)
+    )
+
+
+# ==========================================================
+# ANSWER IMPLEMENTATION
+# ==========================================================
+
+def interpolate_signal(
+    t_original: np.ndarray,
+    x_original: np.ndarray,
+    t_query: np.ndarray
+) -> np.ndarray:
+    """
+    Interpolate using average of two neighboring samples.
+    """
+    # Calculate step size
+    dt = (t_original[-1] - t_original[0]) / (len(t_original) - 1)
+    
+    # Find exact floating-point index for queried times
+    idx_exact = (t_query - t_original[0]) / dt
+    
+    # Force idx_left to be the integer directly to the left, 
+    # and idx_right to be the integer directly to the right.
+    idx_left = np.floor(idx_exact).astype(int)
+    idx_right = idx_left + 1
+    
+    # Identify values that fall within the original time range
+    # Note: since idx_right goes one step further, we check up to len-1
+    valid_mask = (idx_exact >= 0) & (idx_exact <= len(t_original) - 1)
+    
+    # Clip indices to avoid out-of-bounds errors during array access
+    idx_left = np.clip(idx_left, 0, len(t_original) - 1)
+    idx_right = np.clip(idx_right, 0, len(t_original) - 1)
+    
+    # Calculate average of the nearest left and right values
+    y_query = 0.5 * (x_original[idx_left] + x_original[idx_right])
+    
+    # Ignore values beyond the specified time range
+    y_query[~valid_mask] = 0.0
+    
+    return y_query
+
+
+def time_scale(
+    t: np.ndarray,
+    x: np.ndarray,
+    k: int
+) -> np.ndarray:
+    """
+    Time sub-scaling:
+        y(t) = x(t / k)
+    """
+    t_query = t / k
+    return interpolate_signal(t, x, t_query)
+
+
+def plot_pair(t: np.ndarray, x: np.ndarray, y: np.ndarray, title: str):
+    """
+    Plot graphs.
+    """
+    plt.figure(figsize=(10, 5))
+    plt.plot(t, x, label="x(t)", alpha=0.8)
+    plt.plot(t, y, label="y(t)", linestyle="--", linewidth=1)
+    plt.axhline(0, color='black')
+    plt.axvline(0, color='black')
+    plt.title(title)
+    plt.xlabel("t")
+    plt.ylabel("Amplitude")
+    plt.legend()
+    plt.grid(True)
+
+
+# ----------------------------
+# Main
+# ----------------------------
+def main():
+    t = np.linspace(T_MIN, T_MAX, N)
+    x = x_of_t(t)
+
+    k = 2   # sub-scaling factor
+    y = time_scale(t, x, k)
+
+    plot_pair(
+        t,
+        x,
+        y,
+        title=f"Time Sub-scaling: y(t) = x(t / {k})"
+    )
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
