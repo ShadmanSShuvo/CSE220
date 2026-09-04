@@ -124,6 +124,7 @@ class FFTTransformer(DFTAnalyzer):
     """
 
     name = "fft"
+
     def _fft(self, x, inverse=False):
         """Shared FFT butterfly machinery."""
         x = np.asarray(x, dtype=np.complex128)
@@ -192,6 +193,7 @@ class FFTTransformer(DFTAnalyzer):
         """Forward FFT. Same contract as DFTAnalyzer.transform."""
         # TODO: implement this method
         return self._fft(x, inverse=False)
+
     def inverse(self, spectrum):
         """Inverse FFT, including the 1/N factor."""
         # TODO: implement this method
@@ -222,8 +224,77 @@ class ArbitraryLengthFFT(FFTTransformer):
 
     def transform(self, x):
         # TODO (bonus): implement this method
-        raise NotImplementedError("Bonus: implement ArbitraryLengthFFT.transform")
+        x = np.asarray(x, dtype=np.complex128)
+        N = len(x)
+
+        if N == 0:
+            return np.array([], dtype=np.complex128)
+
+        # ---------------------------------------------------------
+        # Bluestein converts the DFT into a convolution.
+        #
+        # M must be large enough for the linear convolution:
+        # M >= 2N - 1
+        # ---------------------------------------------------------
+        M = next_power_of_two(2 * N - 1)
+
+        # ---------------------------------------------------------
+        # Chirp sequences
+        # ---------------------------------------------------------
+        n = np.arange(N)
+
+        chirp = np.exp(-1j * np.pi * n * n / N)
+
+        # a[n] = x[n] * exp(-pi*i*n^2/N)
+        a = np.zeros(M, dtype=np.complex128)
+        a[:N] = x * chirp
+
+        # b[m] = exp(+pi*i*m^2/N)
+        #
+        # We need indices -(N-1) ... (N-1).
+        # Store negative indices at the end of the FFT array.
+        b = np.zeros(M, dtype=np.complex128)
+
+        b[:N] = np.exp(1j * np.pi * n * n / N)
+
+        for m in range(1, N):
+            b[M - m] = b[m]
+
+        # ---------------------------------------------------------
+        # Convolution using the existing radix-2 FFT
+        # ---------------------------------------------------------
+        A = super()._fft(a, inverse=False)
+        B = super()._fft(b, inverse=False)
+
+        convolution = super()._fft(A * B, inverse=True)
+
+        # ---------------------------------------------------------
+        # Multiply by the final chirp
+        # ---------------------------------------------------------
+        result = np.zeros(N, dtype=np.complex128)
+
+        for k in range(N):
+            result[k] = (
+                convolution[k]
+                * np.exp(-1j * np.pi * k * k / N)
+            )
+
+        return result
 
     def inverse(self, spectrum):
         # TODO (bonus): implement this method
-        raise NotImplementedError("Bonus: implement ArbitraryLengthFFT.inverse")
+        spectrum = np.asarray(spectrum, dtype=np.complex128)
+        N = len(spectrum)
+
+        if N == 0:
+            return np.array([], dtype=np.complex128)
+
+        # Use the identity:
+        #
+        # IDFT(X) = conjugate(DFT(conjugate(X))) / N
+        #
+        # This lets us reuse the exact same forward Bluestein
+        # implementation rather than writing another convolution.
+        return np.conjugate(
+            self.transform(np.conjugate(spectrum))
+        ) / N
