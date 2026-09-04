@@ -29,7 +29,13 @@ def next_power_of_two(n):
     Both tasks need this to choose a transform length for the radix-2 FFT.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement next_power_of_two")
+    n = int(n)
+    if n < 1:
+        return 1
+    k = 0
+    while (1 << k) < n:
+        k += 1
+    return 1 << k
 
 
 class DFTAnalyzer:
@@ -59,7 +65,17 @@ class DFTAnalyzer:
         numpy.ndarray of complex128, shape (N,)
         """
         # TODO: implement this method
-        raise NotImplementedError("Implement DFTAnalyzer.transform")
+        x = np.asarray(x, dtype=np.complex128)
+        N = len(x)
+
+        spectrum = np.zeros(N, dtype=np.complex128)
+
+        for k in range(N):
+            for n in range(N):
+                angle = -2j * np.pi * k * n / N
+                spectrum[k] += x[n] * np.exp(angle)
+
+        return spectrum
 
     def inverse(self, spectrum):
         """
@@ -76,7 +92,17 @@ class DFTAnalyzer:
             it is safe to take .real.
         """
         # TODO: implement this method
-        raise NotImplementedError("Implement DFTAnalyzer.inverse")
+        spectrum = np.asarray(spectrum, dtype=np.complex128)
+        N = len(spectrum)
+
+        x = np.zeros(N, dtype=np.complex128)
+
+        for n in range(N):
+            for k in range(N):
+                angle = 2j * np.pi * k * n / N
+                x[n] += spectrum[k] * np.exp(angle)
+
+        return x / N
 
 
 class FFTTransformer(DFTAnalyzer):
@@ -98,16 +124,78 @@ class FFTTransformer(DFTAnalyzer):
     """
 
     name = "fft"
+    def _fft(self, x, inverse=False):
+        """Shared FFT butterfly machinery."""
+        x = np.asarray(x, dtype=np.complex128)
+        N = len(x)
+
+        # FFT requires N to be a power of two.
+        if N < 1 or (N & (N - 1)) != 0:
+            raise ValueError("FFT length must be a power of two")
+
+        # ---------------------------------------------------------
+        # Step 1: Bit-reversal permutation
+        # ---------------------------------------------------------
+        result = np.empty(N, dtype=np.complex128)
+
+        bits = N.bit_length() - 1
+
+        for i in range(N):
+            reversed_i = 0
+            value = i
+
+            for _ in range(bits):
+                reversed_i = (reversed_i << 1) | (value & 1)
+                value >>= 1
+
+            result[reversed_i] = x[i]
+
+        # ---------------------------------------------------------
+        # Step 2: Radix-2 butterfly stages
+        # ---------------------------------------------------------
+        size = 2
+
+        while size <= N:
+
+            half = size // 2
+
+            # Compute twiddle factors ONCE for this stage.
+            sign = 1 if inverse else -1
+
+            twiddles = np.exp(
+                sign * 2j * np.pi * np.arange(half) / size
+            )
+
+            # Apply butterflies
+            for start in range(0, N, size):
+
+                for j in range(half):
+                    even = result[start + j]
+                    odd = result[start + j + half]
+
+                    t = twiddles[j] * odd
+
+                    result[start + j] = even + t
+                    result[start + j + half] = even - t
+
+            size *= 2
+
+        # ---------------------------------------------------------
+        # Step 3: 1/N normalization for inverse FFT
+        # ---------------------------------------------------------
+        if inverse:
+            result /= N
+
+        return result
 
     def transform(self, x):
         """Forward FFT. Same contract as DFTAnalyzer.transform."""
         # TODO: implement this method
-        raise NotImplementedError("Implement FFTTransformer.transform")
-
+        return self._fft(x, inverse=False)
     def inverse(self, spectrum):
         """Inverse FFT, including the 1/N factor."""
         # TODO: implement this method
-        raise NotImplementedError("Implement FFTTransformer.inverse")
+        return self._fft(spectrum, inverse=True)
 
 
 # ---------------------------------------------------------------------------
