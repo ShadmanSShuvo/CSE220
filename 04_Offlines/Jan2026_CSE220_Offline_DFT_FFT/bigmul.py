@@ -24,7 +24,7 @@ import numpy as np
 
 from bench_utils import plot_runtime_curve, time_best, timing_table_lines
 from io_utils import random_decimal, read_operands, write_report, write_text
-from transforms import DFTAnalyzer, FFTTransformer, next_power_of_two
+from transforms import DFTAnalyzer, FFTTransformer, next_power_of_two, ArbitraryLengthFFT
 
 # Python 3.11+ refuses to print integers longer than 4300 digits unless this
 # limit is raised, and the verification step below prints one.
@@ -59,7 +59,40 @@ def to_limbs(text, base_digits=BASE_DIGITS):
         sees it.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement to_limbs")
+    text = str(text).strip()
+
+    # Determine sign
+    sign = 1
+
+    if text.startswith("-"):
+        sign = -1
+        text = text[1:]
+    elif text.startswith("+"):
+        text = text[1:]
+
+    # Make sure we actually have digits
+    if not text:
+        raise ValueError("Invalid decimal number")
+
+    # Remove leading zeros
+    text = text.lstrip("0")
+
+    # Special case: zero
+    if not text:
+        return 1, np.array([0], dtype=np.int64)
+
+    # Make sure the remaining characters are digits
+    if not text.isdigit():
+        raise ValueError("Invalid decimal number")
+
+    # Split from the RIGHT into groups of base_digits.
+    limbs = []
+
+    for end in range(len(text), 0, -base_digits):
+        start = max(0, end - base_digits)
+        limbs.append(int(text[start:end]))
+
+    return sign, np.array(limbs, dtype=np.int64)
 
 
 def from_limbs(sign, limbs, base_digits=BASE_DIGITS):
@@ -77,7 +110,57 @@ def from_limbs(sign, limbs, base_digits=BASE_DIGITS):
         The decimal representation. "0" must come out as "0", not "-0" or "".
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement from_limbs")
+    base = 10 ** base_digits
+
+    # Make a mutable integer array because we need to modify
+    # each limb while propagating carries.
+    limbs = np.asarray(limbs, dtype=np.int64).copy()
+
+    # Nothing useful to convert.
+    if len(limbs) == 0:
+        return "0"
+
+    # ---------------------------------------------------------
+    # Propagate carries from low-order limbs to high-order limbs
+    # ---------------------------------------------------------
+    for i in range(len(limbs) - 1):
+        carry = limbs[i] // base
+        limbs[i] %= base
+        limbs[i + 1] += carry
+
+    # The final limb may itself generate a carry.
+    while limbs[-1] >= base:
+        carry = limbs[-1] // base
+        limbs[-1] %= base
+        limbs = np.append(limbs, carry)
+
+    # ---------------------------------------------------------
+    # Remove leading zero limbs
+    # ---------------------------------------------------------
+    while len(limbs) > 1 and limbs[-1] == 0:
+        limbs = limbs[:-1]
+
+    # ---------------------------------------------------------
+    # Zero is always represented as "0"
+    # ---------------------------------------------------------
+    if len(limbs) == 1 and limbs[0] == 0:
+        return "0"
+
+    # ---------------------------------------------------------
+    # Convert little-endian limbs back to decimal
+    # ---------------------------------------------------------
+    parts = [str(int(limbs[-1]))]
+
+    for i in range(len(limbs) - 2, -1, -1):
+        parts.append(str(int(limbs[i])).zfill(base_digits))
+
+    result = "".join(parts)
+
+    # Re-attach sign
+    if sign < 0:
+        result = "-" + result
+
+    return result
 
 
 def multiply_transform(a, b, engine):
@@ -111,7 +194,58 @@ def multiply_transform(a, b, engine):
         you used (report.txt has to state it).
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement multiply_transform")
+    # pass
+    a = np.asarray(a, dtype=np.int64)
+    b = np.asarray(b, dtype=np.int64)
+
+    # ---------------------------------------------------------
+    # Required length for LINEAR convolution
+    # ---------------------------------------------------------
+    required_length = len(a) + len(b) - 1
+
+    # ---------------------------------------------------------
+    # Choose transform length
+    # ---------------------------------------------------------
+    if isinstance(engine, FFTTransformer):
+        N = next_power_of_two(required_length)
+    else:
+        N = required_length
+
+    # ---------------------------------------------------------
+    # Zero-pad both inputs to length N
+    # ---------------------------------------------------------
+    a_padded = np.zeros(N, dtype=np.complex128)
+    b_padded = np.zeros(N, dtype=np.complex128)
+
+    a_padded[:len(a)] = a
+    b_padded[:len(b)] = b
+
+    # ---------------------------------------------------------
+    # Transform
+    # ---------------------------------------------------------
+    A = engine.transform(a_padded)
+    B = engine.transform(b_padded)
+
+    # ---------------------------------------------------------
+    # Pointwise multiplication in frequency domain
+    # ---------------------------------------------------------
+    C = A * B
+
+    # ---------------------------------------------------------
+    # Inverse transform
+    # ---------------------------------------------------------
+    convolution = engine.inverse(C)
+
+    # ---------------------------------------------------------
+    # Result should be real, apart from floating-point error.
+    # Round before converting to int64.
+    # ---------------------------------------------------------
+    result = np.rint(convolution.real).astype(np.int64)
+
+    # Only the linear-convolution part is meaningful.
+    result = result[:required_length]
+
+    return result, N
 
 
 def multiply_schoolbook(a, b):
@@ -124,7 +258,19 @@ def multiply_schoolbook(a, b):
     sizes.
     """
     # TODO (optional): implement this function
-    raise NotImplementedError("Optional: implement multiply_schoolbook")
+    a = np.asarray(a, dtype=np.int64)
+    b = np.asarray(b, dtype=np.int64)
+
+    if len(a) == 0 or len(b) == 0:
+        return np.array([], dtype=np.int64)
+
+    result = np.zeros(len(a) + len(b) - 1, dtype=np.int64)
+
+    for i in range(len(a)):
+        for j in range(len(b)):
+            result[i + j] += a[i] * b[j]
+
+    return result
 
 
 def multiply(text_a, text_b, method):
@@ -135,7 +281,62 @@ def multiply(text_a, text_b, method):
     (bonus). Pick the engine, convert to limbs, convolve, carry, re-sign.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement multiply")
+
+    # ---------------------------------------------------------
+    # Convert decimal strings to sign + little-endian limbs
+    # ---------------------------------------------------------
+    sign_a, limbs_a = to_limbs(text_a)
+    sign_b, limbs_b = to_limbs(text_b)
+
+    # ---------------------------------------------------------
+    # Select multiplication method
+    # ---------------------------------------------------------
+    if method == "dft":
+        engine = DFTAnalyzer()
+        convolution, N = multiply_transform(
+            limbs_a, limbs_b, engine
+        )
+
+    elif method == "fft":
+        engine = FFTTransformer()
+        convolution, N = multiply_transform(
+            limbs_a, limbs_b, engine
+        )
+
+    elif method == "schoolbook":
+        convolution = multiply_schoolbook(limbs_a, limbs_b)
+
+        # Schoolbook does not use a transform.
+        N = len(convolution)
+
+    elif method == "arbitrary":
+        engine = ArbitraryLengthFFT()
+        convolution, N = multiply_transform(
+            limbs_a, limbs_b, engine
+        )
+
+    else:
+        raise ValueError(f"Unknown multiplication method: {method}")
+
+    # ---------------------------------------------------------
+    # Determine sign.
+    #
+    # Zero should always be positive.
+    # ---------------------------------------------------------
+    if np.all(limbs_a == 0) or np.all(limbs_b == 0):
+        product_sign = 1
+    else:
+        product_sign = sign_a * sign_b
+
+    # ---------------------------------------------------------
+    # Convert convolution coefficients back to decimal
+    # ---------------------------------------------------------
+    product = from_limbs(
+        product_sign,
+        convolution
+    )
+
+    return product, N, limbs_a, limbs_b
 
 
 def run_single(path, method, out_dir):
@@ -155,7 +356,79 @@ def run_single(path, method, out_dir):
     MISMATCH; a MISMATCH must not be silently swallowed.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement run_single")
+    # ---------------------------------------------------------
+    # Read the two decimal operands
+    # ---------------------------------------------------------
+    text_a, text_b = read_operands(path)
+
+    # ---------------------------------------------------------
+    # Perform our multiplication
+    # ---------------------------------------------------------
+    product, N, limbs_a, limbs_b = multiply(
+        text_a,
+        text_b,
+        method
+    )
+
+    # ---------------------------------------------------------
+    # Verify using Python's built-in big integers.
+    #
+    # This is explicitly allowed ONLY at the verification stage.
+    # ---------------------------------------------------------
+    expected = str(int(text_a) * int(text_b))
+
+    if product == expected:
+        verdict = "MATCH"
+    else:
+        verdict = "MISMATCH"
+
+    print(verdict)
+
+    # A mismatch must not be silently swallowed.
+    if verdict == "MISMATCH":
+        print("Expected:", expected)
+        print("Got:     ", product)
+
+    # ---------------------------------------------------------
+    # Create output directory
+    # ---------------------------------------------------------
+    os.makedirs(out_dir, exist_ok=True)
+
+    # ---------------------------------------------------------
+    # Write product.txt
+    # ---------------------------------------------------------
+    product_path = os.path.join(out_dir, "product.txt")
+    write_text(product_path, product + "\n")
+
+    # ---------------------------------------------------------
+    # Prepare report
+    # ---------------------------------------------------------
+    report_lines = [
+        "Task A -- big integer multiplication",
+        "",
+        "input: %s" % path,
+        "method: %s" % method,
+        "",
+        "operand A digits: %d" % len(text_a.lstrip("+-").lstrip("0") or "0"),
+        "operand B digits: %d" % len(text_b.lstrip("+-").lstrip("0") or "0"),
+        "",
+        "base: %d" % BASE,
+        "base digits: %d" % BASE_DIGITS,
+        "",
+        "operand A limbs: %d" % len(limbs_a),
+        "operand B limbs: %d" % len(limbs_b),
+        "transform length N: %d" % N,
+        "",
+        "product digits: %d" % len(product.lstrip("-")),
+        "verification: %s" % verdict,
+        "",
+    ]
+
+    report_path = os.path.join(out_dir, "report.txt")
+    write_report(report_path, report_lines)
+
+    print("wrote", product_path)
+    print("wrote", report_path)
 
 
 # ---------------------------------------------------------------------------
