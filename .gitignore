@@ -13,6 +13,11 @@ __pycache__/
 *$py.class
 tempCodeRunnerFile*
 
+# Virtual environments
+venv/
+env/
+ENV/
+
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 

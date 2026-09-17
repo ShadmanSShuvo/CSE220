@@ -1,7 +1,7 @@
 # CSE 220: Signals and Linear Systems (Sessional)
 
-Department of Computer Science and Engineering  
-**Bangladesh University of Engineering and Technology (BUET)**  
+Department of Computer Science and Engineering
+**Bangladesh University of Engineering and Technology (BUET)**
 **Semester:** January 2026 | **Student Roll:** `2305025`
 
 ---
