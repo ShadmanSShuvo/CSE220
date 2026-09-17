@@ -1,18 +1,23 @@
+# Video files
 *.mkv
+
+# Environments
 .venv/
+venv/
+env/
+ENV/
 
 # Python generated files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Virtual environments
-venv/
-env/
-ENV/
+tempCodeRunnerFile*
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# Editor and IDE
+.vscode/
 
 # macOS metadata
 .DS_Store
