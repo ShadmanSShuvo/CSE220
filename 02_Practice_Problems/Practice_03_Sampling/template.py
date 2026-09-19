@@ -550,18 +550,27 @@ def run_dft_demo():
 
     plt.show()
 
+def create_plot(t, s):
+    plt.figure()
+    plt.plot(t, s)
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+    plt.grid()
+    plt.show()
 
 # ============================================================
 # MAIN
 # ============================================================
 
 def main():
-
+    t=create_time_axis(0.0, 0.1, 2000)
+    s = example_signal(t)  # Warm-up
+    create_plot(t, s)  # Warm-up
     run_sampling_demo()
 
     # Uncomment when needed:
-    # run_spectrum_demo()
-    # run_dft_demo()
+    run_spectrum_demo()
+    run_dft_demo()
 
 
 if __name__ == "__main__":
