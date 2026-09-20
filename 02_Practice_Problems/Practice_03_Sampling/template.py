@@ -558,20 +558,4 @@ def create_plot(t, s):
     plt.grid()
     plt.show()
 
-# ============================================================
-# MAIN
-# ============================================================
-
-def main():
-    t=create_time_axis(0.0, 0.1, 2000)
-    s = example_signal(t)  # Warm-up
-    create_plot(t, s)  # Warm-up
-    run_sampling_demo()
-
-    # Uncomment when needed:
-    run_spectrum_demo()
-    run_dft_demo()
-
-
-if __name__ == "__main__":
-    main()
+# For testing all functions and viewing visual demonstrations, run test_template.py

@@ -1,0 +1,7 @@
+Lab evaluation -- magnitude-phase swap
+image A : images/sunset512.png
+image B : images/skyline512.png
+shape   : (512, 512)
+engine  : fft
+max |obtained - requested| : 1.455e-11
+verification               : MATCH
