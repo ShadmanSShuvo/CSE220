@@ -1,0 +1,1491 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{accent2}{HTML}{B45309}
+\definecolor{codebg}{HTML}{F7F8FA}
+\definecolor{kw}{HTML}{0B5FA5}
+\definecolor{str}{HTML}{7A3E00}
+\definecolor{com}{HTML}{2E7D32}
+\definecolor{rule}{HTML}{D0D7DE}
+
+\pagestyle{fancy}\fancyhf{}
+\lhead{\small\color{accent}\bfseries NumPy \& Matplotlib Function Reference}
+\rhead{\small\color{accent}\leftmark}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{accent2}}{\thesubsection}{0.6em}{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+
+\lstdefinestyle{py}{
+  language=Python, basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{kw}\bfseries, stringstyle=\color{str},
+  commentstyle=\color{com}\itshape, showstringspaces=false,
+  breaklines=true, columns=fullflexible, keepspaces=true,
+  aboveskip=3pt, belowskip=1pt, frame=none,
+}
+
+% function entry box
+\newtcolorbox{func}[1]{
+  breakable, enhanced,
+  colback=codebg, colframe=accent, boxrule=0.6pt, arc=2pt,
+  left=7pt,right=7pt,top=5pt,bottom=6pt,
+  colbacktitle=accent, coltitle=white,
+  fonttitle=\ttfamily\small\bfseries,
+  halign title=flush left,
+  title={#1},
+  breakable, pad at break*=2mm,
+}
+
+% parameter list
+\newenvironment{params}
+  {\smallskip\textbf{\small\color{accent}Parameters}\par\nopagebreak
+   \begin{description}[leftmargin=1.3em,itemsep=1.5pt,parsep=0pt,topsep=1pt,
+      labelindent=0pt,style=sameline,font=\normalfont]}
+  {\end{description}}
+
+\newcommand{\pitem}[3]{\item[{\ttfamily\color{accent}#1}]{\itshape #2}\ --- #3}
+\newcommand{\preturn}[2]{\smallskip\textbf{\small\color{accent}Returns:}\ {\itshape #1} --- #2\par}
+\newcommand{\pnote}[1]{\smallskip\textbf{\small\color{accent}Note:}\ #1\par}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{accent} NumPy \& Matplotlib}\\[6pt]
+{\LARGE\bfseries A Detailed Function Reference}\\[10pt]
+{\large Each function is described, then every parameter is explained.}\\[4pt]
+{\normalsize With signatures, defaults, return values, and short examples.}\\[2cm]
+{\small Companion reference for CSE 219 --- Signals and Their Properties}\\
+\vfill
+{\small\itshape Conventions: \texttt{np} = numpy, \texttt{plt} = matplotlib.pyplot,
+\texttt{ax} = an Axes object, \texttt{fig} = a Figure object.}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\section{NumPy}
+\subsection{Array Creation and Initialization}
+Functions that build new ndarrays. Unless stated otherwise, shape may be an int (1-D) or a tuple of ints, and dtype defaults to float64 for the zeros/ones family.
+
+\begin{func}{np.array(object, dtype=None, copy=True, order='K', ndmin=0)}
+Create an ndarray from any array-like object (list, tuple, nested lists, or another array).
+\begin{params}
+\pitem{object}{array-like}{Input data: a scalar, list, tuple, or nested sequence to convert.}
+\pitem{dtype}{data-type, optional}{Desired element type (e.g. np.float64, np.int32). If omitted it is inferred from the data.}
+\pitem{copy}{bool, default True}{If True always copy; if False avoid a copy when possible.}
+\pitem{order}{\{'K','A','C','F'\}, default 'K'}{Memory layout. 'C' is row-major, 'F' is column-major, 'K' keeps the input layout.}
+\pitem{ndmin}{int, default 0}{Minimum number of dimensions the result must have; ones are prepended to the shape as needed.}
+\end{params}
+\preturn{ndarray}{The constructed array.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+a = np.array([[1, 2], [3, 4]], dtype=float)
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.asarray(a, dtype=None, order=None)}
+Convert the input to an ndarray, but do not copy if it is already an ndarray of the right dtype/order. Useful at the top of functions to accept lists or arrays uniformly.
+\begin{params}
+\pitem{a}{array-like}{Input data to convert.}
+\pitem{dtype}{data-type, optional}{Target element type.}
+\pitem{order}{\{'C','F','A','K'\}, optional}{Desired memory layout.}
+\end{params}
+\preturn{ndarray}{The input as an array (possibly the same object).}
+\end{func}
+\medskip
+
+\begin{func}{np.zeros(shape, dtype=float, order='C')}
+Return a new array of the given shape filled with zeros.
+\begin{params}
+\pitem{shape}{int or tuple of ints}{Dimensions of the array, e.g. 5 or (3, 4).}
+\pitem{dtype}{data-type, default float64}{Element type of the array.}
+\pitem{order}{\{'C','F'\}, default 'C'}{Row-major (C) or column-major (F) storage.}
+\end{params}
+\preturn{ndarray}{Array of zeros.}
+\end{func}
+\medskip
+
+\begin{func}{np.ones(shape, dtype=None, order='C')}
+Return a new array of the given shape filled with ones. Parameters mirror np.zeros.
+\begin{params}
+\pitem{shape}{int or tuple of ints}{Dimensions of the array.}
+\pitem{dtype}{data-type, optional}{Element type (default float64).}
+\pitem{order}{\{'C','F'\}, default 'C'}{Memory layout.}
+\end{params}
+\preturn{ndarray}{Array of ones.}
+\end{func}
+\medskip
+
+\begin{func}{np.full(shape, fill\_value, dtype=None, order='C')}
+Return a new array of the given shape, every element set to fill\_value.
+\begin{params}
+\pitem{shape}{int or tuple of ints}{Dimensions of the array.}
+\pitem{fill\_value}{scalar or array-like}{The value placed in every element.}
+\pitem{dtype}{data-type, optional}{Element type; inferred from fill\_value if omitted.}
+\pitem{order}{\{'C','F'\}, default 'C'}{Memory layout.}
+\end{params}
+\preturn{ndarray}{Constant-filled array.}
+\end{func}
+\medskip
+
+\begin{func}{np.empty(shape, dtype=float, order='C')}
+Allocate an array without initialising its entries. Faster than zeros/ones but the contents are arbitrary garbage until written.
+\begin{params}
+\pitem{shape}{int or tuple of ints}{Dimensions of the array.}
+\pitem{dtype}{data-type, default float64}{Element type.}
+\pitem{order}{\{'C','F'\}, default 'C'}{Memory layout.}
+\end{params}
+\preturn{ndarray}{Uninitialised array.}
+\end{func}
+\medskip
+
+\begin{func}{np.zeros\_like(a, dtype=None, order='K', subok=True, shape=None)}
+Return an array of zeros with the same shape and dtype as a. The sibling functions ones\_like, full\_like, and empty\_like behave identically for their respective fills.
+\begin{params}
+\pitem{a}{array-like}{Prototype array whose shape and dtype are copied.}
+\pitem{dtype}{data-type, optional}{Override the prototype's element type.}
+\pitem{order}{\{'C','F','A','K'\}, default 'K'}{Memory layout of the result.}
+\pitem{shape}{int or tuple, optional}{Override the prototype's shape.}
+\end{params}
+\preturn{ndarray}{Zeros matching a.}
+\end{func}
+\medskip
+
+\begin{func}{np.arange([start,] stop[, step,], dtype=None)}
+Return evenly spaced integer- or float-valued samples over the half-open interval [start, stop). Like Python's range but returns an array and accepts a float step.
+\begin{params}
+\pitem{start}{number, optional}{First value (default 0).}
+\pitem{stop}{number}{End of the interval, exclusive.}
+\pitem{step}{number, optional}{Spacing between values (default 1). Beware of float rounding at the endpoint.}
+\pitem{dtype}{data-type, optional}{Output element type; inferred if omitted.}
+\end{params}
+\preturn{ndarray}{1-D array of samples.}
+\pnote{For a guaranteed number of points including the endpoint, prefer np.linspace.}
+\end{func}
+\medskip
+
+\begin{func}{np.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0)}
+Return num evenly spaced samples over the closed interval [start, stop]. The workhorse for building a continuous-time axis.
+\begin{params}
+\pitem{start}{number}{First sample value.}
+\pitem{stop}{number}{Last sample value (included unless endpoint=False).}
+\pitem{num}{int, default 50}{Number of samples to generate.}
+\pitem{endpoint}{bool, default True}{If True, stop is the last sample; if False it is excluded.}
+\pitem{retstep}{bool, default False}{If True, also return the spacing between samples.}
+\pitem{dtype}{data-type, optional}{Output element type.}
+\pitem{axis}{int, default 0}{Axis along which the samples are stored when start/stop are arrays.}
+\end{params}
+\preturn{ndarray (and float if retstep)}{The samples, and the step if requested.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+t = np.linspace(-5, 5, 1001)   # 1001 points, step 0.01
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0)}
+Return num samples spaced evenly on a log scale, i.e. base**start .. base**stop.
+\begin{params}
+\pitem{start}{number}{base**start is the first value.}
+\pitem{stop}{number}{base**stop is the last value.}
+\pitem{num}{int, default 50}{Number of samples.}
+\pitem{endpoint}{bool, default True}{Include the stop value.}
+\pitem{base}{float, default 10.0}{Base of the log spacing.}
+\pitem{dtype}{data-type, optional}{Output element type.}
+\end{params}
+\preturn{ndarray}{Log-spaced samples.}
+\end{func}
+\medskip
+
+\begin{func}{np.eye(N, M=None, k=0, dtype=float, order='C')}
+Return a 2-D array with ones on one diagonal and zeros elsewhere.
+\begin{params}
+\pitem{N}{int}{Number of rows.}
+\pitem{M}{int, optional}{Number of columns (defaults to N).}
+\pitem{k}{int, default 0}{Diagonal index: 0 is the main diagonal, positive is upper, negative is lower.}
+\pitem{dtype}{data-type, default float}{Element type.}
+\end{params}
+\preturn{ndarray}{The (N, M) matrix.}
+\end{func}
+\medskip
+
+\begin{func}{np.meshgrid(*xi, indexing='xy', sparse=False, copy=True)}
+From N 1-D coordinate vectors, produce N-D coordinate grids suitable for evaluating functions of several variables (e.g. surfaces, images).
+\begin{params}
+\pitem{xi}{1-D arrays}{One or more coordinate vectors (x, y, ...).}
+\pitem{indexing}{\{'xy','ij'\}, default 'xy'}{'xy' gives Cartesian (image) indexing; 'ij' gives matrix indexing.}
+\pitem{sparse}{bool, default False}{If True return sparse broadcastable grids to save memory.}
+\pitem{copy}{bool, default True}{If False return views where possible.}
+\end{params}
+\preturn{list of ndarrays}{The coordinate matrices X, Y, ...}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+X, Y = np.meshgrid(np.linspace(-2,2,100), np.linspace(-2,2,100))
+Z = np.exp(-(X**2 + Y**2))
+\end{lstlisting}
+\end{func}
+\medskip
+
+\subsection{Shape and Rearrangement}
+\begin{func}{np.reshape(a, newshape, order='C')}
+Give an array a new shape without changing its data. Equivalent method: a.reshape(...).
+\begin{params}
+\pitem{a}{array-like}{Array to reshape.}
+\pitem{newshape}{int or tuple of ints}{Target shape. One dimension may be -1, which is inferred from the array size.}
+\pitem{order}{\{'C','F','A'\}, default 'C'}{Order in which elements are read and placed.}
+\end{params}
+\preturn{ndarray}{A reshaped view when possible, else a copy.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+v = a.reshape(-1)        # flatten to 1-D
+M = a.reshape(3, -1)     # 3 rows, columns inferred
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.ravel(a, order='C')}
+Return a contiguous flattened 1-D array. Returns a view when possible (contrast a.flatten(), which always copies).
+\begin{params}
+\pitem{a}{array-like}{Array to flatten.}
+\pitem{order}{\{'C','F','A','K'\}, default 'C'}{Reading order of the elements.}
+\end{params}
+\preturn{ndarray}{Flattened array.}
+\end{func}
+\medskip
+
+\begin{func}{np.transpose(a, axes=None)}
+Permute the dimensions of an array. For 2-D this is the matrix transpose; the shorthand a.T does the same.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axes}{tuple of ints, optional}{Permutation of the axis order. If omitted, the axes are reversed.}
+\end{params}
+\preturn{ndarray}{A view with permuted axes.}
+\end{func}
+\medskip
+
+\begin{func}{np.concatenate((a1, a2, ...), axis=0)}
+Join a sequence of arrays along an existing axis. All arrays must match in shape except along that axis.
+\begin{params}
+\pitem{(a1, a2, ...)}{sequence of array-like}{The arrays to join, given as a tuple or list.}
+\pitem{axis}{int or None, default 0}{Axis to join along. If None, the arrays are flattened first.}
+\end{params}
+\preturn{ndarray}{The concatenated array.}
+\end{func}
+\medskip
+
+\begin{func}{np.stack(arrays, axis=0)}
+Join a sequence of equally shaped arrays along a NEW axis, increasing the dimensionality by one.
+\begin{params}
+\pitem{arrays}{sequence of array-like}{Arrays of identical shape.}
+\pitem{axis}{int, default 0}{Position of the new axis in the result.}
+\end{params}
+\preturn{ndarray}{Array with one more dimension than each input.}
+\end{func}
+\medskip
+
+\begin{func}{np.vstack(tup)  /  np.hstack(tup)}
+Stack arrays vertically (row-wise) or horizontally (column-wise). Convenience wrappers around concatenate.
+\begin{params}
+\pitem{tup}{sequence of array-like}{Arrays to stack. For vstack they must share column counts; for hstack, row counts.}
+\end{params}
+\preturn{ndarray}{The stacked array.}
+\end{func}
+\medskip
+
+\begin{func}{np.split(ary, indices\_or\_sections, axis=0)}
+Split an array into multiple sub-arrays along an axis.
+\begin{params}
+\pitem{ary}{ndarray}{Array to divide.}
+\pitem{indices\_or\_sections}{int or 1-D array}{If an int N, split into N equal parts (must divide evenly). If a list of indices, split at those positions.}
+\pitem{axis}{int, default 0}{Axis along which to split.}
+\end{params}
+\preturn{list of ndarrays}{The sub-arrays.}
+\end{func}
+\medskip
+
+\begin{func}{np.expand\_dims(a, axis)}
+Insert a new length-one axis at the given position, e.g. to turn a 1-D signal into a row or column vector for broadcasting.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple of ints}{Position(s) where the new axis is placed.}
+\end{params}
+\preturn{ndarray}{View with expanded shape.}
+\end{func}
+\medskip
+
+\begin{func}{np.squeeze(a, axis=None)}
+Remove length-one axes from the shape.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple, optional}{Only squeeze the listed axes; error if any is not length one.}
+\end{params}
+\preturn{ndarray}{View with the singleton dimensions removed.}
+\end{func}
+\medskip
+
+\begin{func}{np.repeat(a, repeats, axis=None)}
+Repeat each element of the array. Contrast np.tile, which repeats the whole array as a block.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{repeats}{int or array of ints}{How many times to repeat each element (may differ per element).}
+\pitem{axis}{int, optional}{Axis along which to repeat. If None, the array is flattened first.}
+\end{params}
+\preturn{ndarray}{The repeated array.}
+\end{func}
+\medskip
+
+\begin{func}{np.tile(A, reps)}
+Construct a new array by tiling (block-repeating) A the given number of times along each axis.
+\begin{params}
+\pitem{A}{array-like}{The tile to repeat.}
+\pitem{reps}{int or tuple of ints}{Number of repetitions along each axis.}
+\end{params}
+\preturn{ndarray}{The tiled array.}
+\end{func}
+\medskip
+
+\begin{func}{np.roll(a, shift, axis=None)}
+Circularly shift array elements; values that roll past the end reappear at the start. Handy for a wrap-around (periodic) delay.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{shift}{int or tuple of ints}{Number of places to shift; positive shifts toward higher indices.}
+\pitem{axis}{int or tuple, optional}{Axis to shift along. If None the flattened array is shifted then reshaped.}
+\end{params}
+\preturn{ndarray}{The shifted array.}
+\end{func}
+\medskip
+
+\begin{func}{np.pad(array, pad\_width, mode='constant', **kwargs)}
+Pad an array along its edges.
+\begin{params}
+\pitem{array}{array-like}{Array to pad.}
+\pitem{pad\_width}{int or sequence}{Number of values padded before and after each axis, e.g. ((2,3),) or ((1,1),(2,2)).}
+\pitem{mode}{str, default 'constant'}{Padding strategy: 'constant', 'edge', 'reflect', 'wrap', 'mean', etc.}
+\pitem{constant\_values}{scalar, optional}{Fill value when mode='constant' (default 0).}
+\end{params}
+\preturn{ndarray}{The padded array.}
+\end{func}
+\medskip
+
+\begin{func}{np.flip(m, axis=None)}
+Reverse the order of elements along the given axis (time reversal for a 1-D signal is np.flip(x)).
+\begin{params}
+\pitem{m}{array-like}{Input array.}
+\pitem{axis}{int or tuple, optional}{Axis to flip. If None, flip over all axes.}
+\end{params}
+\preturn{ndarray}{A view with reversed order.}
+\end{func}
+\medskip
+
+\begin{func}{np.sort(a, axis=-1, kind=None, order=None)}
+Return a sorted copy of an array.
+\begin{params}
+\pitem{a}{array-like}{Array to sort.}
+\pitem{axis}{int or None, default -1}{Axis to sort along; None flattens first.}
+\pitem{kind}{\{'quicksort','mergesort','stable','heapsort'\}, optional}{Sorting algorithm; 'stable' preserves order of ties.}
+\pitem{order}{str or list, optional}{For structured arrays, the field(s) to sort by.}
+\end{params}
+\preturn{ndarray}{Sorted array.}
+\end{func}
+\medskip
+
+\begin{func}{np.argsort(a, axis=-1, kind=None)}
+Return the indices that would sort an array. Applying them (a[idx]) yields the sorted array.
+\begin{params}
+\pitem{a}{array-like}{Array to sort.}
+\pitem{axis}{int or None, default -1}{Axis to sort along.}
+\pitem{kind}{str, optional}{Sorting algorithm.}
+\end{params}
+\preturn{ndarray of int}{Index array.}
+\end{func}
+\medskip
+
+\subsection{Indexing, Searching, Selection}
+\begin{func}{np.where(condition[, x, y])}
+With three arguments, return an array picking elements from x where condition is True and from y otherwise. With one argument, return the indices where condition is True.
+\begin{params}
+\pitem{condition}{array-like of bool}{The selection mask.}
+\pitem{x}{array-like, optional}{Values chosen where condition is True.}
+\pitem{y}{array-like, optional}{Values chosen where condition is False.}
+\end{params}
+\preturn{ndarray or tuple}{Selected values, or a tuple of index arrays if x and y are omitted.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+y = np.where(t >= 0, np.exp(-t), 0.0)   # a causal signal
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.clip(a, a\_min, a\_max, out=None)}
+Limit the values of an array to the interval [a\_min, a\_max]; values outside are set to the nearest bound.
+\begin{params}
+\pitem{a}{array-like}{Array to clip.}
+\pitem{a\_min}{scalar or array-like or None}{Lower bound (None means no lower clipping).}
+\pitem{a\_max}{scalar or array-like or None}{Upper bound (None means no upper clipping).}
+\pitem{out}{ndarray, optional}{Array to write the result into.}
+\end{params}
+\preturn{ndarray}{The clipped array.}
+\end{func}
+\medskip
+
+\begin{func}{np.nonzero(a)}
+Return the indices of the elements that are nonzero, as a tuple of arrays (one per dimension).
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\end{params}
+\preturn{tuple of ndarrays}{Index arrays locating the nonzero entries.}
+\end{func}
+\medskip
+
+\begin{func}{np.take(a, indices, axis=None)}
+Gather elements from an array at the given indices along an axis.
+\begin{params}
+\pitem{a}{array-like}{Source array.}
+\pitem{indices}{array-like of int}{Indices of the values to extract.}
+\pitem{axis}{int, optional}{Axis to take from; None uses the flattened array.}
+\end{params}
+\preturn{ndarray}{The gathered elements.}
+\end{func}
+\medskip
+
+\begin{func}{np.unique(ar, return\_index=False, return\_inverse=False, return\_counts=False, axis=None)}
+Find the sorted unique elements of an array, optionally with bookkeeping arrays.
+\begin{params}
+\pitem{ar}{array-like}{Input array.}
+\pitem{return\_index}{bool, default False}{Also return indices of the first occurrences.}
+\pitem{return\_inverse}{bool, default False}{Also return indices to reconstruct ar from the unique values.}
+\pitem{return\_counts}{bool, default False}{Also return how many times each unique value appears.}
+\pitem{axis}{int, optional}{Operate along this axis instead of flattening.}
+\end{params}
+\preturn{ndarray (and extras)}{The unique values, plus any requested index/count arrays.}
+\end{func}
+\medskip
+
+\subsection{Elementwise Math (Universal Functions)}
+These operate elementwise with broadcasting. Most ufuncs share the optional keyword arguments out (destination array) and where (a boolean mask selecting which elements to compute).
+
+\begin{func}{np.add / subtract / multiply / divide / power (x1, x2, /, out=None, where=True)}
+Elementwise arithmetic, equivalent to the operators + - * / **. Broadcasting aligns shapes.
+\begin{params}
+\pitem{x1, x2}{array-like}{The operands; broadcast against each other.}
+\pitem{out}{ndarray, optional}{Where to store the result.}
+\pitem{where}{array-like of bool, optional}{Compute only where True, leaving other out entries untouched.}
+\end{params}
+\preturn{ndarray}{Elementwise result.}
+\end{func}
+\medskip
+
+\begin{func}{np.sqrt(x) / np.square(x) / np.cbrt(x)}
+Elementwise square root, square, and cube root.
+\begin{params}
+\pitem{x}{array-like}{Input values (sqrt requires non-negative input for real output).}
+\pitem{out}{ndarray, optional}{Output array.}
+\pitem{where}{bool array, optional}{Selective computation mask.}
+\end{params}
+\preturn{ndarray}{Transformed values.}
+\end{func}
+\medskip
+
+\begin{func}{np.exp(x) / np.log(x) / np.log10(x) / np.log2(x)}
+Elementwise exponential and logarithms. np.expm1 and np.log1p give exp(x)-1 and log(1+x) accurately for small x.
+\begin{params}
+\pitem{x}{array-like}{Input values (log requires positive input).}
+\pitem{out}{ndarray, optional}{Output array.}
+\pitem{where}{bool array, optional}{Selective computation mask.}
+\end{params}
+\preturn{ndarray}{Transformed values.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+decay = np.exp(-0.5 * t)
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.sin / np.cos / np.tan / np.arctan2 (x, /, out=None)}
+Elementwise trigonometric functions (arguments in radians). np.arctan2(y, x) returns the angle of the point (x, y) in the correct quadrant.
+\begin{params}
+\pitem{x}{array-like}{Angle in radians (or y, x for arctan2).}
+\pitem{out}{ndarray, optional}{Output array.}
+\end{params}
+\preturn{ndarray}{Trig values.}
+\end{func}
+\medskip
+
+\begin{func}{np.abs(x)  (a.k.a. np.absolute)}
+Elementwise absolute value; for complex input it returns the magnitude.
+\begin{params}
+\pitem{x}{array-like}{Input values.}
+\end{params}
+\preturn{ndarray}{Magnitudes.}
+\end{func}
+\medskip
+
+\begin{func}{np.sign(x)}
+Elementwise sign: -1, 0, or +1 (0 maps to 0). Useful for building square waves.
+\begin{params}
+\pitem{x}{array-like}{Input values.}
+\end{params}
+\preturn{ndarray}{The signs.}
+\end{func}
+\medskip
+
+\begin{func}{np.power(x1, x2)}
+Raise each base in x1 to the power in x2, elementwise with broadcasting.
+\begin{params}
+\pitem{x1}{array-like}{Bases.}
+\pitem{x2}{array-like}{Exponents.}
+\end{params}
+\preturn{ndarray}{x1 raised to x2.}
+\end{func}
+\medskip
+
+\begin{func}{np.round(a, decimals=0, out=None)}
+Round to the given number of decimal places (banker's rounding at exact halves).
+\begin{params}
+\pitem{a}{array-like}{Input values.}
+\pitem{decimals}{int, default 0}{Number of decimal places; negative rounds to tens, hundreds, etc.}
+\pitem{out}{ndarray, optional}{Output array.}
+\end{params}
+\preturn{ndarray}{Rounded values.}
+\end{func}
+\medskip
+
+\begin{func}{np.mod(x1, x2)  (a.k.a. np.remainder)}
+Elementwise remainder with the same sign as the divisor x2. Equivalent to the \% operator.
+\begin{params}
+\pitem{x1}{array-like}{Dividend.}
+\pitem{x2}{array-like}{Divisor.}
+\end{params}
+\preturn{ndarray}{The remainders.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+phase = np.mod(t, 2*np.pi)   # wrap into one period
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.maximum(x1, x2) / np.minimum(x1, x2)}
+Elementwise maximum/minimum of two arrays (contrast np.max, which reduces a single array).
+\begin{params}
+\pitem{x1, x2}{array-like}{Arrays compared elementwise.}
+\end{params}
+\preturn{ndarray}{Elementwise extreme.}
+\end{func}
+\medskip
+
+\subsection{Reductions and Statistics}
+Reductions collapse one or more axes. They share the keywords axis (which axis/axes to reduce, None means all) and keepdims (retain reduced axes as length one for broadcasting).
+
+\begin{func}{np.sum(a, axis=None, dtype=None, keepdims=False, initial=0, where=True)}
+Sum of array elements over the given axis.
+\begin{params}
+\pitem{a}{array-like}{Array to sum.}
+\pitem{axis}{int or tuple or None, default None}{Axis/axes to sum over; None sums everything.}
+\pitem{dtype}{data-type, optional}{Accumulator type; use float64 to avoid integer overflow.}
+\pitem{keepdims}{bool, default False}{Keep reduced axes with length one.}
+\pitem{initial}{scalar, optional}{Starting value of the sum.}
+\pitem{where}{bool array, optional}{Include only these elements.}
+\end{params}
+\preturn{ndarray or scalar}{The sum.}
+\end{func}
+\medskip
+
+\begin{func}{np.prod(a, axis=None, dtype=None, keepdims=False)}
+Product of array elements over an axis. Same axis/dtype/keepdims semantics as np.sum.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple or None}{Axis to reduce.}
+\pitem{dtype}{data-type, optional}{Accumulator type.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{ndarray or scalar}{The product.}
+\end{func}
+\medskip
+
+\begin{func}{np.mean(a, axis=None, dtype=None, keepdims=False)}
+Arithmetic mean over the given axis.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple or None}{Axis to average over.}
+\pitem{dtype}{data-type, optional}{Type used for the intermediate sum.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{ndarray or scalar}{The mean.}
+\end{func}
+\medskip
+
+\begin{func}{np.std(a, axis=None, dtype=None, ddof=0, keepdims=False)}
+Standard deviation over an axis. np.var is the variance with the same signature.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple or None}{Axis to reduce.}
+\pitem{ddof}{int, default 0}{Delta degrees of freedom: the divisor is N - ddof (use 1 for the sample std).}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{ndarray or scalar}{The standard deviation.}
+\end{func}
+\medskip
+
+\begin{func}{np.median(a, axis=None, keepdims=False)}
+Median value along an axis (average of the two central values for even counts).
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple or None}{Axis to reduce.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{ndarray or scalar}{The median.}
+\end{func}
+\medskip
+
+\begin{func}{np.percentile(a, q, axis=None, method='linear', keepdims=False)}
+Compute the q-th percentile of the data along an axis.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{q}{float or array of float in [0,100]}{Percentile(s) to compute (e.g. 50 for the median).}
+\pitem{axis}{int or tuple or None}{Axis to reduce.}
+\pitem{method}{str, default 'linear'}{Interpolation method between data points.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{scalar or ndarray}{The requested percentile(s).}
+\end{func}
+\medskip
+
+\begin{func}{np.min / np.max  (a, axis=None, keepdims=False, initial, where)}
+Minimum/maximum value along an axis. (Also spelled np.amin / np.amax.)
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int or tuple or None}{Axis to reduce.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\pitem{initial}{scalar, optional}{A starting value that participates in the comparison.}
+\end{params}
+\preturn{ndarray or scalar}{The extreme value.}
+\end{func}
+\medskip
+
+\begin{func}{np.argmin / np.argmax  (a, axis=None)}
+Index of the minimum/maximum value along an axis (index into the flattened array if axis is None).
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int, optional}{Axis along which to search.}
+\end{params}
+\preturn{ndarray of int or int}{Location of the extreme.}
+\end{func}
+\medskip
+
+\begin{func}{np.cumsum(a, axis=None, dtype=None)}
+Cumulative sum of the elements along an axis. Scaling by the sample spacing turns this into a running (Riemann) integral.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{axis}{int, optional}{Axis to accumulate along; None flattens first.}
+\pitem{dtype}{data-type, optional}{Accumulator type.}
+\end{params}
+\preturn{ndarray}{Array of running totals.}
+\end{func}
+\medskip
+
+\begin{func}{np.all / np.any  (a, axis=None, keepdims=False)}
+Test whether all / any elements along an axis evaluate to True.
+\begin{params}
+\pitem{a}{array-like}{Input array (usually boolean).}
+\pitem{axis}{int or tuple or None}{Axis to reduce.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{ndarray of bool or bool}{The logical reduction.}
+\end{func}
+\medskip
+
+\subsection{Calculus and Signal Processing}
+The numerical-analysis functions that recur throughout a signals course.
+
+\begin{func}{np.trapezoid(y, x=None, dx=1.0, axis=-1)}
+Integrate y along an axis using the composite trapezoidal rule. This is the renamed np.trapz (use np.trapz on NumPy < 2.0). The main tool for computing signal energy and power.
+\begin{params}
+\pitem{y}{array-like}{Values to integrate.}
+\pitem{x}{array-like, optional}{Sample positions. If given, spacing may be non-uniform.}
+\pitem{dx}{scalar, default 1.0}{Uniform spacing between samples, used only when x is None.}
+\pitem{axis}{int, default -1}{Axis along which to integrate.}
+\end{params}
+\preturn{float or ndarray}{The definite integral.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+E = np.trapezoid(np.abs(x)**2, t)   # signal energy
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.gradient(f, *varargs, axis=None, edge\_order=1)}
+Estimate the derivative of f using central differences in the interior and one-sided differences at the boundaries.
+\begin{params}
+\pitem{f}{array-like}{Samples of the function to differentiate.}
+\pitem{varargs}{scalars or arrays, optional}{Sample spacing(s): a single dx, or coordinate arrays per axis.}
+\pitem{axis}{int or tuple, optional}{Axis/axes along which to differentiate (default all).}
+\pitem{edge\_order}{\{1, 2\}, default 1}{Order of the one-sided difference used at the boundaries.}
+\end{params}
+\preturn{ndarray or list of ndarrays}{The gradient(s).}
+\end{func}
+\medskip
+
+\begin{func}{np.diff(a, n=1, axis=-1, prepend=<no value>, append=<no value>)}
+Discrete difference along an axis: out[i] = a[i+1] - a[i], applied n times.
+\begin{params}
+\pitem{a}{array-like}{Input array.}
+\pitem{n}{int, default 1}{How many times the difference is taken.}
+\pitem{axis}{int, default -1}{Axis to difference along.}
+\pitem{prepend / append}{array-like, optional}{Values attached before/after along the axis before differencing (keeps the length).}
+\end{params}
+\preturn{ndarray}{The n-th differences (length reduced by n unless padded).}
+\end{func}
+\medskip
+
+\begin{func}{np.interp(x, xp, fp, left=None, right=None, period=None)}
+One-dimensional piecewise-linear interpolation. Resamples a signal known at points xp onto new points x.
+\begin{params}
+\pitem{x}{array-like}{Query coordinates where interpolated values are wanted.}
+\pitem{xp}{1-D array, increasing}{Known sample coordinates (must be increasing unless period is set).}
+\pitem{fp}{1-D array}{Known sample values at xp.}
+\pitem{left}{float, optional}{Value returned for x < xp[0] (default fp[0]).}
+\pitem{right}{float, optional}{Value returned for x > xp[-1] (default fp[-1]).}
+\pitem{period}{float, optional}{If set, treat the data as periodic with this period.}
+\end{params}
+\preturn{ndarray}{Interpolated values at x.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+y_shifted = np.interp(t - t0, t, x, left=0, right=0)  # delay by t0
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.convolve(a, v, mode='full')}
+Discrete linear convolution of two 1-D sequences (the operation an LTI filter performs).
+\begin{params}
+\pitem{a}{1-D array}{First sequence (e.g. the input signal).}
+\pitem{v}{1-D array}{Second sequence (e.g. the impulse response).}
+\pitem{mode}{\{'full','same','valid'\}, default 'full'}{'full' returns the whole overlap (len a+len v-1); 'same' returns length max(len a, len v); 'valid' returns only fully overlapping points.}
+\end{params}
+\preturn{ndarray}{The convolution.}
+\end{func}
+\medskip
+
+\begin{func}{np.correlate(a, v, mode='valid')}
+Cross-correlation of two 1-D sequences; like convolution but without reversing the second sequence.
+\begin{params}
+\pitem{a, v}{1-D arrays}{The sequences to correlate.}
+\pitem{mode}{\{'valid','same','full'\}, default 'valid'}{Amount of overlap returned, as in np.convolve.}
+\end{params}
+\preturn{ndarray}{The cross-correlation.}
+\end{func}
+\medskip
+
+\begin{func}{np.fft.fft(a, n=None, axis=-1, norm=None)}
+Compute the one-dimensional discrete Fourier transform of a sequence via the FFT.
+\begin{params}
+\pitem{a}{array-like}{Input sequence (may be complex).}
+\pitem{n}{int, optional}{Length of the transformed axis: the input is zero-padded or truncated to n.}
+\pitem{axis}{int, default -1}{Axis to transform.}
+\pitem{norm}{\{None,'ortho','forward','backward'\}, optional}{Normalisation convention.}
+\end{params}
+\preturn{complex ndarray}{The DFT coefficients.}
+\end{func}
+\medskip
+
+\begin{func}{np.fft.fftfreq(n, d=1.0)}
+Return the DFT sample frequencies (in cycles per unit) matching an n-point transform.
+\begin{params}
+\pitem{n}{int}{Number of samples in the signal / transform.}
+\pitem{d}{scalar, default 1.0}{Sample spacing (e.g. the time step). Frequencies scale as 1/d.}
+\end{params}
+\preturn{ndarray}{The frequency bins.}
+\end{func}
+\medskip
+
+\subsection{Linear Algebra}
+\begin{func}{np.dot(a, b, out=None)}
+Dot product of two arrays: inner product for 1-D, matrix product for 2-D. For matrices prefer the @ operator or np.matmul.
+\begin{params}
+\pitem{a, b}{array-like}{Operands whose inner dimensions must agree.}
+\pitem{out}{ndarray, optional}{Destination for the result.}
+\end{params}
+\preturn{ndarray or scalar}{The dot/matrix product.}
+\end{func}
+\medskip
+
+\begin{func}{np.matmul(x1, x2)   (the @ operator)}
+Matrix product with broadcasting over leading (batch) dimensions. Does not accept scalar operands.
+\begin{params}
+\pitem{x1, x2}{array-like}{Arrays whose last two dimensions are matrix-compatible.}
+\end{params}
+\preturn{ndarray}{The matrix product.}
+\end{func}
+\medskip
+
+\begin{func}{np.linalg.solve(a, b)}
+Solve the linear system a x = b for x. Numerically preferable to forming inv(a) @ b.
+\begin{params}
+\pitem{a}{(..., M, M) array}{Square coefficient matrix (or a stack of them).}
+\pitem{b}{(..., M) or (..., M, K) array}{Right-hand side vector(s).}
+\end{params}
+\preturn{ndarray}{The solution x.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+x = np.linalg.solve(A, b)
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{np.linalg.inv(a)}
+Compute the multiplicative inverse of a square matrix. Use solve instead when you only need to apply the inverse to a vector.
+\begin{params}
+\pitem{a}{(..., M, M) array}{Invertible square matrix (or stack).}
+\end{params}
+\preturn{ndarray}{The inverse matrix.}
+\end{func}
+\medskip
+
+\begin{func}{np.linalg.det(a)}
+Compute the determinant of a square matrix.
+\begin{params}
+\pitem{a}{(..., M, M) array}{Square matrix (or stack).}
+\end{params}
+\preturn{float or ndarray}{The determinant(s).}
+\end{func}
+\medskip
+
+\begin{func}{np.linalg.norm(x, ord=None, axis=None, keepdims=False)}
+Matrix or vector norm.
+\begin{params}
+\pitem{x}{array-like}{Input vector or matrix.}
+\pitem{ord}{int, float, or str, optional}{Order of the norm: 2 (Euclidean, default for vectors), 1, np.inf, 'fro' (Frobenius), etc.}
+\pitem{axis}{int or 2-tuple, optional}{Axis/axes over which the norm is computed.}
+\pitem{keepdims}{bool, default False}{Retain reduced dimensions.}
+\end{params}
+\preturn{float or ndarray}{The norm(s).}
+\end{func}
+\medskip
+
+\begin{func}{np.linalg.eig(a)}
+Compute the eigenvalues and right eigenvectors of a square matrix.
+\begin{params}
+\pitem{a}{(..., M, M) array}{Square matrix.}
+\end{params}
+\preturn{tuple (eigvals, eigvecs)}{1-D array of eigenvalues and a matrix whose columns are the eigenvectors.}
+\end{func}
+\medskip
+
+\begin{func}{np.linalg.svd(a, full\_matrices=True, compute\_uv=True)}
+Singular value decomposition a = U S V\textasciicircum{}H.
+\begin{params}
+\pitem{a}{(..., M, N) array}{Matrix to decompose.}
+\pitem{full\_matrices}{bool, default True}{If True, U and V are full-sized; if False, reduced to economy size.}
+\pitem{compute\_uv}{bool, default True}{If False, return only the singular values.}
+\end{params}
+\preturn{tuple}{U, the singular values S, and V\textasciicircum{}H (or just S).}
+\end{func}
+\medskip
+
+\subsection{Logic, Comparison, Complex}
+\begin{func}{np.isclose(a, b, rtol=1e-05, atol=1e-08, equal\_nan=False)}
+Elementwise test of approximate equality within a relative and absolute tolerance.
+\begin{params}
+\pitem{a, b}{array-like}{Arrays to compare.}
+\pitem{rtol}{float, default 1e-5}{Relative tolerance.}
+\pitem{atol}{float, default 1e-8}{Absolute tolerance (dominates near zero).}
+\pitem{equal\_nan}{bool, default False}{If True, treat NaNs in the same position as equal.}
+\end{params}
+\preturn{ndarray of bool}{Elementwise closeness.}
+\end{func}
+\medskip
+
+\begin{func}{np.allclose(a, b, rtol=1e-05, atol=1e-08, equal\_nan=False)}
+Return a single True/False for whether all elements of a and b are close. Ideal for verifying that two computations agree.
+\begin{params}
+\pitem{a, b}{array-like}{Arrays to compare.}
+\pitem{rtol}{float, default 1e-5}{Relative tolerance.}
+\pitem{atol}{float, default 1e-8}{Absolute tolerance.}
+\pitem{equal\_nan}{bool, default False}{Treat matching NaNs as equal.}
+\end{params}
+\preturn{bool}{Whether the arrays match within tolerance.}
+\end{func}
+\medskip
+
+\begin{func}{np.angle(z, deg=False)  /  np.conj(z)}
+np.angle returns the phase (argument) of complex values; np.conj returns the complex conjugate. Combined with np.abs they cover polar form.
+\begin{params}
+\pitem{z}{array-like}{Complex (or real) input.}
+\pitem{deg}{bool, default False}{For np.angle, return the phase in degrees instead of radians.}
+\end{params}
+\preturn{ndarray}{The phase, or the conjugate.}
+\end{func}
+\medskip
+
+\subsection{Random Sampling (Generator API)}
+The modern interface: create a Generator with np.random.default\_rng(seed), then call its methods. Passing a seed makes results reproducible.
+
+\begin{func}{np.random.default\_rng(seed=None)}
+Construct a random-number Generator, the recommended entry point for random sampling.
+\begin{params}
+\pitem{seed}{int, sequence, or None}{Seed for reproducibility. None draws fresh entropy from the OS.}
+\end{params}
+\preturn{Generator}{An object exposing the sampling methods below.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+rng = np.random.default_rng(42)
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{rng.random(size=None, dtype=np.float64)}
+Draw samples from the uniform distribution on the half-open interval [0, 1).
+\begin{params}
+\pitem{size}{int or tuple, optional}{Output shape. None returns a single scalar.}
+\pitem{dtype}{data-type, default float64}{Floating type of the samples.}
+\end{params}
+\preturn{float or ndarray}{Uniform samples in [0, 1).}
+\end{func}
+\medskip
+
+\begin{func}{rng.normal(loc=0.0, scale=1.0, size=None)}
+Draw samples from a Gaussian (normal) distribution.
+\begin{params}
+\pitem{loc}{float or array-like, default 0.0}{Mean of the distribution.}
+\pitem{scale}{float or array-like, default 1.0}{Standard deviation (must be non-negative).}
+\pitem{size}{int or tuple, optional}{Output shape.}
+\end{params}
+\preturn{float or ndarray}{Normal samples.}
+\end{func}
+\medskip
+
+\begin{func}{rng.uniform(low=0.0, high=1.0, size=None)}
+Draw samples from a uniform distribution over [low, high).
+\begin{params}
+\pitem{low}{float or array-like, default 0.0}{Lower bound.}
+\pitem{high}{float or array-like, default 1.0}{Upper bound (excluded).}
+\pitem{size}{int or tuple, optional}{Output shape.}
+\end{params}
+\preturn{float or ndarray}{Uniform samples.}
+\end{func}
+\medskip
+
+\begin{func}{rng.integers(low, high=None, size=None, endpoint=False)}
+Draw random integers from low (inclusive) to high (exclusive by default).
+\begin{params}
+\pitem{low}{int}{Lowest integer, or the exclusive high if high is None.}
+\pitem{high}{int, optional}{Upper bound.}
+\pitem{size}{int or tuple, optional}{Output shape.}
+\pitem{endpoint}{bool, default False}{If True, high becomes inclusive.}
+\end{params}
+\preturn{int or ndarray}{Random integers.}
+\end{func}
+\medskip
+
+\begin{func}{rng.choice(a, size=None, replace=True, p=None)}
+Draw a random sample from a 1-D array or from range(a).
+\begin{params}
+\pitem{a}{1-D array-like or int}{The population to sample from (or its length).}
+\pitem{size}{int or tuple, optional}{Number/shape of samples.}
+\pitem{replace}{bool, default True}{Whether sampling is with replacement.}
+\pitem{p}{1-D array-like, optional}{Per-element selection probabilities (must sum to 1).}
+\end{params}
+\preturn{scalar or ndarray}{The drawn sample(s).}
+\end{func}
+\medskip
+
+\section{Matplotlib}
+\subsection{Figures and Axes}
+A Figure is the whole canvas; an Axes is one plotting area (with its x/y axes) inside it. The object-oriented style -- create a Figure and Axes, then call methods on the Axes -- is recommended over the implicit plt.* state machine.
+
+\begin{func}{plt.subplots(nrows=1, ncols=1, figsize=None, sharex=False, sharey=False, squeeze=True, dpi=None)}
+Create a Figure and a grid of Axes in one call. The usual starting point for a plot.
+\begin{params}
+\pitem{nrows, ncols}{int, default 1}{Number of rows and columns in the Axes grid.}
+\pitem{figsize}{(float, float), optional}{Figure size in inches, (width, height).}
+\pitem{sharex}{bool or \{'none','all','row','col'\}, default False}{Share the x-axis range/ticks across subplots.}
+\pitem{sharey}{bool or str, default False}{Share the y-axis similarly.}
+\pitem{squeeze}{bool, default True}{If True, collapse the returned Axes array when possible (a single Axes is returned bare).}
+\pitem{dpi}{float, optional}{Resolution in dots per inch.}
+\end{params}
+\preturn{(Figure, Axes or ndarray of Axes)}{The figure and its Axes.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+fig, ax = plt.subplots(figsize=(8, 4))
+fig, axs = plt.subplots(2, 2, sharex=True)
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{plt.figure(num=None, figsize=None, dpi=None, facecolor=None)}
+Create a new Figure (or activate an existing one). Use when you want the figure before adding axes manually.
+\begin{params}
+\pitem{num}{int or str, optional}{Identifier of the figure; reuses it if it already exists.}
+\pitem{figsize}{(float, float), optional}{Size in inches (width, height).}
+\pitem{dpi}{float, optional}{Resolution in dots per inch.}
+\pitem{facecolor}{color, optional}{Background colour of the figure.}
+\end{params}
+\preturn{Figure}{The new or activated figure.}
+\end{func}
+\medskip
+
+\begin{func}{fig.add\_subplot(nrows, ncols, index, projection=None)}
+Add a single Axes to a figure at a position in an implied grid.
+\begin{params}
+\pitem{nrows, ncols}{int}{Shape of the subplot grid.}
+\pitem{index}{int}{1-based position of this Axes, counting left-to-right, top-to-bottom.}
+\pitem{projection}{str, optional}{Axes projection, e.g. 'polar' or '3d'.}
+\end{params}
+\preturn{Axes}{The newly added Axes.}
+\end{func}
+\medskip
+
+\begin{func}{ax.twinx()  /  ax.twiny()}
+Create a second Axes that shares the x-axis (twinx) or y-axis (twiny) with ax, enabling a second independent y (or x) scale on the opposite side.
+\preturn{Axes}{The twin Axes.}
+\end{func}
+\medskip
+
+\begin{func}{fig.tight\_layout(pad=1.08, h\_pad=None, w\_pad=None)}
+Automatically adjust subplot spacing so labels, ticks, and titles do not overlap or get clipped.
+\begin{params}
+\pitem{pad}{float, default 1.08}{Padding around the figure edge, in fractions of the font size.}
+\pitem{h\_pad, w\_pad}{float, optional}{Vertical/horizontal padding between adjacent subplots.}
+\end{params}
+\preturn{None}{Adjusts the layout in place.}
+\end{func}
+\medskip
+
+\begin{func}{fig.suptitle(t, fontsize=None, y=0.98)}
+Add a centred title spanning the whole figure (above all subplots).
+\begin{params}
+\pitem{t}{str}{The title text.}
+\pitem{fontsize}{int or str, optional}{Font size of the title.}
+\pitem{y}{float, default 0.98}{Vertical position in figure coordinates.}
+\end{params}
+\preturn{Text}{The created text object.}
+\end{func}
+\medskip
+
+\subsection{Plotting: Lines and Points}
+The most common Axes plotting methods. Line-style keywords (color, linestyle, linewidth, marker, markersize, alpha, label, zorder) are accepted by most of them.
+
+\begin{func}{ax.plot(x, y, [fmt], color=None, linestyle='-', linewidth=None, marker=None, markersize=None, label=None, alpha=None)}
+Plot y versus x as connected line segments and/or markers. With a single argument, x defaults to the sample index.
+\begin{params}
+\pitem{x, y}{array-like}{Data coordinates. y alone plots against 0..N-1.}
+\pitem{fmt}{str, optional}{Compact style string combining colour, line style and marker, e.g. 'r--o'.}
+\pitem{color}{color, optional}{Line colour ('C0'..'C9', names, hex, or grey levels like '0.6').}
+\pitem{linestyle}{str, default '-'}{'-', '--', '-.', or ':'.}
+\pitem{linewidth}{float, optional}{Line width in points.}
+\pitem{marker}{str, optional}{Marker symbol, e.g. 'o', '.', 'x', 's', '\textasciicircum{}'.}
+\pitem{markersize}{float, optional}{Marker size in points.}
+\pitem{label}{str, optional}{Legend label for this line.}
+\pitem{alpha}{float in [0,1], optional}{Opacity (1 is opaque).}
+\end{params}
+\preturn{list of Line2D}{The plotted line object(s).}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+ax.plot(t, x, color='C0', linewidth=1.5, label='x(t)')
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{ax.scatter(x, y, s=None, c=None, marker='o', cmap=None, alpha=None, edgecolors=None)}
+Draw a scatter plot of points, optionally with per-point size and colour.
+\begin{params}
+\pitem{x, y}{array-like}{Point coordinates.}
+\pitem{s}{scalar or array, optional}{Marker area(s) in points squared.}
+\pitem{c}{color or array, optional}{Point colour(s); an array is mapped through cmap.}
+\pitem{marker}{str, default 'o'}{Marker style.}
+\pitem{cmap}{str or Colormap, optional}{Colormap used when c is numeric.}
+\pitem{alpha}{float, optional}{Opacity.}
+\pitem{edgecolors}{color, optional}{Colour of the marker edges.}
+\end{params}
+\preturn{PathCollection}{The scatter collection.}
+\end{func}
+\medskip
+
+\begin{func}{ax.stem(x, y, linefmt=None, markerfmt=None, basefmt=None)}
+Draw a stem (lollipop) plot: a vertical line to each point from a baseline. The natural way to display discrete-time signals.
+\begin{params}
+\pitem{x}{array-like}{Sample positions (index n).}
+\pitem{y}{array-like}{Sample values x[n].}
+\pitem{linefmt}{str, optional}{Style of the stem lines.}
+\pitem{markerfmt}{str, optional}{Style of the head markers.}
+\pitem{basefmt}{str, optional}{Style of the baseline.}
+\end{params}
+\preturn{StemContainer}{The stem artists.}
+\end{func}
+\medskip
+
+\begin{func}{ax.step(x, y, where='pre')}
+Draw a piecewise-constant (staircase) line, appropriate for sampled or held signals.
+\begin{params}
+\pitem{x, y}{array-like}{Data coordinates.}
+\pitem{where}{\{'pre','post','mid'\}, default 'pre'}{Where the step occurs relative to the samples.}
+\end{params}
+\preturn{list of Line2D}{The step line(s).}
+\end{func}
+\medskip
+
+\begin{func}{ax.fill\_between(x, y1, y2=0, where=None, interpolate=False, alpha=None, color=None)}
+Fill the area between two horizontal curves y1 and y2.
+\begin{params}
+\pitem{x}{array-like}{x coordinates shared by both curves.}
+\pitem{y1}{array-like}{First curve.}
+\pitem{y2}{array-like or scalar, default 0}{Second curve (a constant such as 0 is common).}
+\pitem{where}{bool array, optional}{Fill only where this condition is True.}
+\pitem{interpolate}{bool, default False}{Interpolate crossing points for a clean fill boundary.}
+\pitem{alpha}{float, optional}{Opacity of the fill.}
+\pitem{color}{color, optional}{Fill colour.}
+\end{params}
+\preturn{PolyCollection}{The filled region.}
+\end{func}
+\medskip
+
+\begin{func}{ax.errorbar(x, y, yerr=None, xerr=None, fmt='', ecolor=None, capsize=None)}
+Plot points or a line with error bars.
+\begin{params}
+\pitem{x, y}{array-like}{Data coordinates.}
+\pitem{yerr}{scalar or array, optional}{Vertical error magnitudes (symmetric, or a 2xN array for asymmetric).}
+\pitem{xerr}{scalar or array, optional}{Horizontal error magnitudes.}
+\pitem{fmt}{str, optional}{Line/marker format for the data points; '' draws error bars only.}
+\pitem{ecolor}{color, optional}{Colour of the error bars.}
+\pitem{capsize}{float, optional}{Length of the error-bar caps in points.}
+\end{params}
+\preturn{ErrorbarContainer}{The line, caps, and bars.}
+\end{func}
+\medskip
+
+\begin{func}{ax.loglog / ax.semilogx / ax.semilogy (x, y, **kwargs)}
+Plot with logarithmic scaling on both axes, on x only, or on y only. Accepts the same keywords as ax.plot.
+\begin{params}
+\pitem{x, y}{array-like}{Data coordinates (positive where a log axis applies).}
+\end{params}
+\preturn{list of Line2D}{The plotted line(s).}
+\end{func}
+\medskip
+
+\subsection{Plotting: Bars, Histograms, Images}
+\begin{func}{ax.bar(x, height, width=0.8, bottom=None, align='center', color=None)}
+Draw a vertical bar chart (ax.barh is the horizontal version, taking y and width).
+\begin{params}
+\pitem{x}{array-like}{x positions of the bar centres (or left edges).}
+\pitem{height}{array-like}{Heights of the bars.}
+\pitem{width}{scalar or array, default 0.8}{Bar width(s).}
+\pitem{bottom}{scalar or array, optional}{Baseline of the bars (for stacking).}
+\pitem{align}{\{'center','edge'\}, default 'center'}{Whether x gives the centre or the left edge.}
+\pitem{color}{color or list, optional}{Bar colour(s).}
+\end{params}
+\preturn{BarContainer}{The bar rectangles.}
+\end{func}
+\medskip
+
+\begin{func}{ax.hist(x, bins=10, range=None, density=False, cumulative=False, histtype='bar', color=None)}
+Compute and draw a histogram of x.
+\begin{params}
+\pitem{x}{array-like}{Data to bin.}
+\pitem{bins}{int or sequence, default 10}{Number of equal-width bins, or explicit bin edges.}
+\pitem{range}{(float, float), optional}{Lower and upper range of the bins.}
+\pitem{density}{bool, default False}{If True, normalise so the histogram integrates to 1.}
+\pitem{cumulative}{bool, default False}{If True, accumulate counts.}
+\pitem{histtype}{\{'bar','step','stepfilled'\}, default 'bar'}{Visual style.}
+\pitem{color}{color, optional}{Bar colour.}
+\end{params}
+\preturn{tuple (n, bins, patches)}{Counts, bin edges, and the drawn patches.}
+\end{func}
+\medskip
+
+\begin{func}{ax.imshow(X, cmap=None, aspect=None, interpolation=None, origin=None, extent=None, vmin=None, vmax=None)}
+Display 2-D array data as an image (heatmap). Ideal for spectrograms and matrices.
+\begin{params}
+\pitem{X}{array-like}{2-D (grayscale) or 3-D (RGB/RGBA) image data.}
+\pitem{cmap}{str or Colormap, optional}{Colormap for scalar data, e.g. 'viridis', 'gray'.}
+\pitem{aspect}{\{'equal','auto'\} or float, optional}{Pixel aspect ratio; 'auto' fills the Axes.}
+\pitem{interpolation}{str, optional}{Resampling method, e.g. 'nearest', 'bilinear'.}
+\pitem{origin}{\{'upper','lower'\}, optional}{Whether row 0 is at the top or bottom.}
+\pitem{extent}{(left, right, bottom, top), optional}{Data coordinates of the image corners.}
+\pitem{vmin, vmax}{float, optional}{Data values mapped to the ends of the colormap.}
+\end{params}
+\preturn{AxesImage}{The image artist.}
+\end{func}
+\medskip
+
+\begin{func}{ax.pcolormesh(X, Y, C, shading='flat', cmap=None, vmin=None, vmax=None)}
+Draw a (possibly non-uniform) quadrilateral mesh coloured by C; more flexible than imshow for irregular grids.
+\begin{params}
+\pitem{X, Y}{array-like}{Coordinates of the mesh vertices.}
+\pitem{C}{array-like}{Values that colour each cell.}
+\pitem{shading}{\{'flat','nearest','gouraud','auto'\}, default 'flat'}{How cells are coloured/interpolated.}
+\pitem{cmap}{str or Colormap, optional}{Colormap.}
+\pitem{vmin, vmax}{float, optional}{Colour scale limits.}
+\end{params}
+\preturn{QuadMesh}{The mesh artist.}
+\end{func}
+\medskip
+
+\begin{func}{ax.contour / ax.contourf (X, Y, Z, levels=None, cmap=None)}
+Draw contour lines (contour) or filled contour regions (contourf) of a surface Z over the grid (X, Y).
+\begin{params}
+\pitem{X, Y}{array-like}{Grid coordinates (as from np.meshgrid).}
+\pitem{Z}{array-like}{Surface height at each grid point.}
+\pitem{levels}{int or array, optional}{Number of contour levels, or the explicit level values.}
+\pitem{cmap}{str or Colormap, optional}{Colormap for the contours.}
+\end{params}
+\preturn{QuadContourSet}{The contour set (pass to colorbar).}
+\end{func}
+\medskip
+
+\begin{func}{fig.colorbar(mappable, ax=None, label=None, orientation='vertical')}
+Add a colorbar that explains the colour-to-value mapping of an image, mesh, or contour set.
+\begin{params}
+\pitem{mappable}{ScalarMappable}{The object returned by imshow/pcolormesh/scatter/contourf.}
+\pitem{ax}{Axes or list, optional}{Axes to steal space from for the colorbar.}
+\pitem{label}{str, optional}{Label drawn alongside the colorbar.}
+\pitem{orientation}{\{'vertical','horizontal'\}, default 'vertical'}{Colorbar orientation.}
+\end{params}
+\preturn{Colorbar}{The colorbar object.}
+\end{func}
+\medskip
+
+\subsection{Axis Configuration}
+\begin{func}{ax.set\_xlabel(xlabel, fontsize=None, labelpad=None)   /   ax.set\_ylabel(...)   /   ax.set\_title(...)}
+Set the x-axis label, y-axis label, or the Axes title.
+\begin{params}
+\pitem{xlabel / ylabel / label}{str}{The text to display.}
+\pitem{fontsize}{int or str, optional}{Font size.}
+\pitem{labelpad}{float, optional}{Spacing between the label and the axis, in points.}
+\end{params}
+\preturn{Text}{The label/title text object.}
+\end{func}
+\medskip
+
+\begin{func}{ax.set\_xlim(left=None, right=None)   /   ax.set\_ylim(bottom=None, top=None)}
+Set the data limits (visible range) of an axis. Passing a reversed pair inverts the axis.
+\begin{params}
+\pitem{left / bottom}{float, optional}{Lower data limit.}
+\pitem{right / top}{float, optional}{Upper data limit.}
+\end{params}
+\preturn{tuple}{The new limits.}
+\end{func}
+\medskip
+
+\begin{func}{ax.set\_xticks(ticks, labels=None, minor=False)   /   ax.set\_yticks(...)}
+Set the tick locations (and optionally their text labels) on an axis.
+\begin{params}
+\pitem{ticks}{array-like}{Positions at which to place ticks.}
+\pitem{labels}{list of str, optional}{Custom text for each tick.}
+\pitem{minor}{bool, default False}{Whether these are minor rather than major ticks.}
+\end{params}
+\preturn{list}{The tick objects.}
+\end{func}
+\medskip
+
+\begin{func}{ax.tick\_params(axis='both', which='major', labelsize=None, direction=None, length=None, rotation=None)}
+Change the appearance of ticks and their labels.
+\begin{params}
+\pitem{axis}{\{'x','y','both'\}, default 'both'}{Which axis to modify.}
+\pitem{which}{\{'major','minor','both'\}, default 'major'}{Which set of ticks.}
+\pitem{labelsize}{float or str, optional}{Font size of the tick labels.}
+\pitem{direction}{\{'in','out','inout'\}, optional}{Whether ticks point inward or outward.}
+\pitem{length}{float, optional}{Tick length in points.}
+\pitem{rotation}{float, optional}{Rotation angle of the tick labels.}
+\end{params}
+\preturn{None}{Modifies the ticks in place.}
+\end{func}
+\medskip
+
+\begin{func}{ax.grid(visible=True, which='major', axis='both', color=None, linestyle=None, alpha=None)}
+Toggle and style the background grid lines.
+\begin{params}
+\pitem{visible}{bool, default True}{Whether to show the grid.}
+\pitem{which}{\{'major','minor','both'\}, default 'major'}{Which ticks get grid lines.}
+\pitem{axis}{\{'x','y','both'\}, default 'both'}{Which direction(s) to draw.}
+\pitem{color}{color, optional}{Grid line colour.}
+\pitem{linestyle}{str, optional}{Grid line style, e.g. ':'.}
+\pitem{alpha}{float, optional}{Grid opacity.}
+\end{params}
+\preturn{None}{Modifies the grid in place.}
+\end{func}
+\medskip
+
+\begin{func}{ax.axhline(y=0, xmin=0, xmax=1, color=None, linestyle='-', linewidth=None)   /   ax.axvline(x=0, ...)}
+Draw a horizontal (axhline) or vertical (axvline) reference line spanning the Axes.
+\begin{params}
+\pitem{y / x}{float, default 0}{Position of the line in data coordinates.}
+\pitem{xmin, xmax / ymin, ymax}{float in [0,1], default 0..1}{Fractional extent of the line across the Axes.}
+\pitem{color}{color, optional}{Line colour.}
+\pitem{linestyle}{str, default '-'}{Line style.}
+\pitem{linewidth}{float, optional}{Line width.}
+\end{params}
+\preturn{Line2D}{The reference line.}
+\end{func}
+\medskip
+
+\begin{func}{ax.axvspan(xmin, xmax, ymin=0, ymax=1, color=None, alpha=None)   /   ax.axhspan(...)}
+Shade a vertical (axvspan) or horizontal (axhspan) band across the Axes -- e.g. to highlight one period.
+\begin{params}
+\pitem{xmin, xmax}{float}{Data-coordinate edges of the band.}
+\pitem{ymin, ymax}{float in [0,1], default 0..1}{Fractional vertical extent.}
+\pitem{color}{color, optional}{Fill colour.}
+\pitem{alpha}{float, optional}{Opacity of the shaded band.}
+\end{params}
+\preturn{Polygon}{The shaded patch.}
+\end{func}
+\medskip
+
+\begin{func}{ax.set\_xscale / ax.set\_yscale ('log', base=10)}
+Set the scale of an axis to 'linear', 'log', 'symlog', or 'logit'.
+\begin{params}
+\pitem{value}{str}{The scale name, e.g. 'log'.}
+\pitem{base}{float, optional}{Logarithm base for a log scale.}
+\end{params}
+\preturn{None}{Changes the scale in place.}
+\end{func}
+\medskip
+
+\begin{func}{ax.set\_aspect(aspect, adjustable=None)}
+Set the aspect ratio of the Axes ('equal' makes one data unit equal in x and y).
+\begin{params}
+\pitem{aspect}{\{'auto','equal'\} or float}{Ratio of y-unit to x-unit length.}
+\pitem{adjustable}{\{'box','datalim'\}, optional}{What is adjusted to achieve the aspect.}
+\end{params}
+\preturn{None}{Applies the aspect in place.}
+\end{func}
+\medskip
+
+\subsection{Legends, Text, Annotations}
+\begin{func}{ax.legend(handles=None, labels=None, loc='best', ncol=1, fontsize=None, frameon=True, title=None)}
+Add a legend describing the labelled artists on the Axes.
+\begin{params}
+\pitem{handles}{list of Artist, optional}{Artists to include; by default all labelled artists are used.}
+\pitem{labels}{list of str, optional}{Legend entry texts (override the artists' labels).}
+\pitem{loc}{str or int, default 'best'}{Placement, e.g. 'upper right', 'lower left', 'best'.}
+\pitem{ncol}{int, default 1}{Number of columns in the legend.}
+\pitem{fontsize}{int or str, optional}{Entry font size.}
+\pitem{frameon}{bool, default True}{Whether to draw the legend's frame.}
+\pitem{title}{str, optional}{A title for the legend box.}
+\end{params}
+\preturn{Legend}{The legend object.}
+\end{func}
+\medskip
+
+\begin{func}{ax.text(x, y, s, fontsize=None, ha='left', va='baseline', color=None, rotation=0)}
+Place arbitrary text at data coordinates (x, y).
+\begin{params}
+\pitem{x, y}{float}{Position of the text in data coordinates.}
+\pitem{s}{str}{The text string.}
+\pitem{fontsize}{int or str, optional}{Font size.}
+\pitem{ha}{\{'left','center','right'\}, default 'left'}{Horizontal alignment relative to (x, y).}
+\pitem{va}{\{'top','center','bottom','baseline'\}, default 'baseline'}{Vertical alignment.}
+\pitem{color}{color, optional}{Text colour.}
+\pitem{rotation}{float, default 0}{Rotation angle in degrees.}
+\end{params}
+\preturn{Text}{The text object.}
+\end{func}
+\medskip
+
+\begin{func}{ax.annotate(text, xy, xytext=None, arrowprops=None, ha='left', fontsize=None)}
+Annotate a point xy with text, optionally drawing an arrow from the text to the point.
+\begin{params}
+\pitem{text}{str}{The annotation string.}
+\pitem{xy}{(float, float)}{The point being annotated, in data coordinates.}
+\pitem{xytext}{(float, float), optional}{Where to place the text (defaults to xy).}
+\pitem{arrowprops}{dict, optional}{Arrow style, e.g. dict(arrowstyle='->').}
+\pitem{ha}{\{'left','center','right'\}, optional}{Horizontal alignment of the text.}
+\pitem{fontsize}{int or str, optional}{Font size.}
+\end{params}
+\preturn{Annotation}{The annotation object.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+ax.annotate('peak', xy=(x0, y0), xytext=(x0+1, y0+1),
+            arrowprops=dict(arrowstyle='->'))
+\end{lstlisting}
+\end{func}
+\medskip
+
+\subsection{Saving, Display, Global Style}
+\begin{func}{fig.savefig(fname, dpi=None, bbox\_inches=None, transparent=False, facecolor='auto', format=None)}
+Save the figure to a file. The format is inferred from the file extension unless given explicitly.
+\begin{params}
+\pitem{fname}{str or path}{Output path, e.g. 'plot.png' or 'fig.pdf'.}
+\pitem{dpi}{float, optional}{Resolution in dots per inch (raster formats).}
+\pitem{bbox\_inches}{str or Bbox, optional}{'tight' trims surrounding whitespace.}
+\pitem{transparent}{bool, default False}{Make the figure background transparent.}
+\pitem{facecolor}{color, optional}{Background colour of the saved figure.}
+\pitem{format}{str, optional}{Explicit format, e.g. 'png', 'pdf', 'svg'.}
+\end{params}
+\preturn{None}{Writes the file.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+fig.savefig('out.png', dpi=150, bbox_inches='tight')
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{plt.show()}
+Display all open figures and (in scripts) block until the windows are closed. Not needed in notebooks with inline plotting.
+\preturn{None}{Renders the figures.}
+\end{func}
+\medskip
+
+\begin{func}{plt.close(fig=None)}
+Close a figure window and free its memory. Important in loops that create many figures.
+\begin{params}
+\pitem{fig}{Figure, int, str, or 'all', optional}{Which figure to close; 'all' closes every open figure.}
+\end{params}
+\preturn{None}{Closes the figure(s).}
+\end{func}
+\medskip
+
+\begin{func}{matplotlib.use(backend)}
+Select the rendering backend. Call before importing pyplot. Use 'Agg' for headless scripts/servers that only save files.
+\begin{params}
+\pitem{backend}{str}{Backend name, e.g. 'Agg', 'TkAgg', 'QtAgg'.}
+\end{params}
+\preturn{None}{Sets the backend.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+import matplotlib
+matplotlib.use('Agg')      # no display; savefig only
+import matplotlib.pyplot as plt
+\end{lstlisting}
+\end{func}
+\medskip
+
+\begin{func}{plt.style.use(style)}
+Apply a predefined style sheet that changes default colours, fonts, and grids for subsequent plots.
+\begin{params}
+\pitem{style}{str, dict, or list}{A style name (e.g. 'ggplot', 'seaborn-v0\_8'), a settings dict, or a list combining several.}
+\end{params}
+\preturn{None}{Updates the defaults.}
+\end{func}
+\medskip
+
+\begin{func}{plt.rcParams[key] = value}
+Read or set a global default (a 'runtime configuration' parameter) affecting all subsequent plots.
+\begin{params}
+\pitem{key}{str}{The parameter name, e.g. 'font.size', 'lines.linewidth', 'figure.dpi'.}
+\pitem{value}{various}{The new default value.}
+\end{params}
+\preturn{None}{Mutates the global configuration.}
+\smallskip\textbf{\small\color{accent}Example}
+\begin{lstlisting}[style=py]
+plt.rcParams['font.size'] = 11
+\end{lstlisting}
+\end{func}
+\medskip
+
+
+\end{document}
