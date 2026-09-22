@@ -1,9 +1,7 @@
-# Video files
 # Video and Large Media Files
 *.mkv
 *.mp4
 
-# Environments
 # Python Virtual Environments
 .venv/
 venv/
@@ -12,7 +10,6 @@ ENV/
 env.bak/
 venv.bak/
 
-# Python generated files
 # Python Bytecode & Cache
 __pycache__/
 *.py[cod]
@@ -26,23 +23,15 @@ dist/
 build/
 tempCodeRunnerFile*
 
-# Virtual environments
-venv/
-env/
-ENV/
-
-# Jupyter Notebook checkpoints
 # Jupyter Notebook Checkpoints
 .ipynb_checkpoints/
 
-# Editor and IDE
 # IDE & Editors
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# macOS metadata
 # OS Artifacts
 .DS_Store
 Thumbs.db

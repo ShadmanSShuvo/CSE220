@@ -35,7 +35,6 @@ CSE220/
 │
 ├── 02_Practice_Problems/                    # Lab practice sets & reference solutions
 │   ├── Practice_01_Python/                  # Practice Set 1 (Python, signal arrays, outputs)
-│   └── Practice_02_Convolution/             # Practice Set 2 (Discrete convolution & solutions)
 │   ├── Practice_02_Convolution/             # Practice Set 2 (Discrete convolution & solutions)
 │   └── Practice_03_Sampling/                # Practice Set 3 (24-section DSP toolkit & visual suite)
 │
@@ -43,7 +42,6 @@ CSE220/
 │   ├── Online_01_Signals_and_Properties/    # Online 1: Signals & properties (sec_A, sec_B, sec_C)
 │   ├── Online_02_Convolution/               # Online 2: LTI systems & convolution (sec_A, sec_B, sec_C)
 │   ├── Online_03_FS_and_CFT/                # Online 3: Fourier Series & CFT (sec_A, sec_B)
-│   ├── Online_04_DFT_and_FFT/               # Online 4: DFT & FFT image processing (sec_A, sec_B)
 │   ├── Online_04_DFT_and_FFT/               # Online 4: DFT & FFT image processing (sec_A, sec_B, sec_C)
 │   ├── Online_05_Sampling/                  # Online 5: Sampling, ZOH droop & oversampling (Sec_A, Sec_B, Sec_C)
 │   └── Past_Batches_and_Prep/               # CSE 22 batch archives & predicted lab questions
@@ -91,7 +89,6 @@ CSE220/
 | **10** | Frequency Domain Image Processing (Hybrid Images, Phase Swap) | **Online 4**: DFT & FFT (`03_Onlines/Online_04_DFT_and_FFT`) |
 | **11** | Project Progress & Demonstration | **Project Update Milestone** (`06_Project`) |
 | **12** | Buffer / Review Week | Comprehensive Review & Exam Preparation |
-| **13** | Sampling Theorem, Filtering, Laplace & Z-Transform | **Online 5** |
 | **13** | Sampling Theorem, Filtering, Laplace & Z-Transform | **Online 5**: Sampling & Reconstruction (`03_Onlines/Online_05_Sampling`) |
 | **14** | Final Comprehensive Assessment | **Sessional Quiz Exam** |
 
