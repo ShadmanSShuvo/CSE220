@@ -19,4 +19,4 @@ This directory contains the major programming assignments (**Offlines**) complet
 Each offline folder is organized into clean functional workspaces:
 - `starter/`: Original instructor-provided starter code and assignment PDF specifications.
 - `submission/` or `v2_final/`: Official tested assignment submissions for Roll `2305025`.
-- `archives/`: Packaged submission archives (`.zip`) and development drafts.
+- `Archives/04_Offlines/`: All distribution and submission `.zip` packages are centralized in the root [`Archives/`](../Archives/) directory to avoid cluttering working code.

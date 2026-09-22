@@ -47,30 +47,23 @@ CSE220/
 │   └── Past_Batches_and_Prep/               # CSE 22 batch archives & predicted lab questions
 │
 ├── 04_Offlines/                             # Major programming assignments
-│   ├── Offline_01_Convolution/              # LTI system simulation & 1D/2D convolution
-│   │   ├── v1_initial/                      # Version 1 implementation
-│   │   ├── v2_final/                        # Version 2 with refined LTI engine
-│   │   └── archives/                        # Submission archives (.zip)
-│   ├── Offline_02_FS_and_CFT/               # Fourier Series & Continuous Fourier Transform
-│   │   ├── task1_fourier_epicycles/         # Epicycle drawing animation from SVG paths
-│   │   ├── task2_cft_edge_detector/         # Continuous Fourier transform 2D edge detection
-│   │   ├── submission/                      # Roll 2305025 submission files & archive
-│   │   └── archives/                        # Starter package archive (.zip)
-│   └── Offline_03_DFT_and_FFT/              # Discrete & Fast Fourier Transforms
-│       ├── starter/                         # Official starter package & specifications
-│       ├── dev_workspace/                   # Development scripts, drivers & benchmarks
-│       ├── test_results_full/               # Verified test suite runs & output comparisons
-│       ├── submission/                      # Roll 2305025 submission folder & zip
-│       └── archives/                        # Starter package archive (.zip)
+│   ├── Offline_01_Convolution/              # LTI system simulation & 1D/2D convolution (v1_initial, v2_final)
+│   ├── Offline_02_FS_and_CFT/               # Fourier Series & Continuous Fourier Transform (epicycles, edge detector)
+│   └── Offline_03_DFT_and_FFT/              # Discrete & Fast Fourier Transforms (starter, dev_workspace, submission)
 │
 ├── 05_Reference_Materials/                  # Senior notes, handnotes & cheat sheets
 │   ├── akib/                                # Lab question bank, cheatsheets & sample sets
 │   ├── Mahdi/                               # Theory slides, problems, solutions & reference PDFs
 │   └── sami/                                # Handnotes, DSP lab exam guides & reference notebooks
 │
-└── 06_Project/                              # Term project workspace & documentation
-    ├── CSE 220 Project Ideas - Project Ideas.csv  # 50+ project ideas catalog
-    └── README.md                            # Project timeline, milestones & tracking
+├── 06_Project/                              # Term project workspace & documentation
+│   ├── CSE 220 Project Ideas - Project Ideas.csv  # 50+ project ideas catalog
+│   └── README.md                            # Project timeline, milestones & tracking
+│
+└── Archives/                                # Centralized repository zip archives & distributions
+    ├── 02_Practice_Problems/                # Practice 01 & 03 zip bundles
+    ├── 04_Offlines/                         # Offline 01, 02 & 03 starter and submission archives
+    └── README.md                            # Catalog and extraction guide
 ```
 
 ---
