@@ -9,7 +9,7 @@ Foundational Python notebooks, NumPy drills, Matplotlib tutorials, and classroom
 | Folder | Focus Area | Description |
 | :--- | :--- | :--- |
 | [`01_Python_Basics/`](./01_Python_Basics/) | **Language & Environment Basics** | Python syntax, lists, dicts, NumPy array introduction, and Online 1 experiment setups. |
-| [`02_Python_Numpy_Matplotlib_Tutorials/`](./02_Python_Numpy_Matplotlib_Tutorials/) | **Progressive Numerical Computing** | 45+ structured, numbered scripts covering Fibonacci, matrix operations, statistical calculations, ECG simulation, random walks, and digital oscilloscope simulations. |
+| [`02_Numpy_Matplotlib_Tutorials/`](./02_Numpy_Matplotlib_Tutorials/) | **Progressive Numerical Computing** | 45+ structured, numbered scripts covering Fibonacci, matrix operations, statistical calculations, ECG simulation, random walks, and digital oscilloscope simulations. |
 | [`03_Numpy_Class_Demos/`](./03_Numpy_Class_Demos/) | **Classroom Demonstrations** | Live interactive plotting scripts: bar charts, scatter plots, square waves, and sampling rate visualizers. |
 | [`04_Signals_Properties/`](./04_Signals_Properties/) | **Core Signal Operations** | 20 self-contained implementations of fundamental continuous and discrete signal properties (time shift, scale, reversal, unit step, ramp, energy, average power). |
 | [`05_Lecture_01_Signals/`](./05_Lecture_01_Signals/) | **Lecture 1 Notes & Masks** | Advanced piecewise signal construction, manual and vectorized interpolation functions, and masking routines. |

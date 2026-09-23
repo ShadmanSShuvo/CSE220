@@ -28,7 +28,7 @@ CSE220/
 ├── 01_Basics_and_Lectures/                  # Foundations & lecture demonstrations
 │   ├── 01_Python_Basics/                    # Core Python & NumPy basics notebooks
 │   │   └── online1_prep_experiments/        # Online 1 signal transformation experiments
-│   ├── 02_Python_Numpy_Matplotlib_Tutorials/# 45 progressive NumPy & Matplotlib scripts
+│   ├── 02_Numpy_Matplotlib_Tutorials/       # 45 progressive NumPy & Matplotlib scripts
 │   ├── 03_Numpy_Class_Demos/                # Class demonstration scripts
 │   ├── 04_Signals_Properties/               # 20 standalone fundamental signal properties scripts
 │   └── 05_Lecture_01_Signals/               # Lecture 1 notes, masks, and signal operations
@@ -51,29 +51,19 @@ CSE220/
 │   ├── Offline_02_FS_and_CFT/               # Fourier Series & Continuous Fourier Transform (epicycles, edge detector)
 │   └── Offline_03_DFT_and_FFT/              # Discrete & Fast Fourier Transforms (starter, dev_workspace, submission)
 │
-├── 05_Reference_Materials/                  # Senior notes, handnotes & cheat sheets
-│   ├── akib/                                # Lab question bank, cheatsheets & sample sets
-│   ├── Mahdi/                               # Theory slides, problems, solutions & reference PDFs
-│   └── sami/                                # Handnotes, DSP lab exam guides & reference notebooks
-│
-├── 06_Project/                              # Term project workspace & documentation
-│   ├── CSE 220 Project Ideas - Project Ideas.csv  # 50+ project ideas catalog
-│   └── README.md                            # Project timeline, milestones & tracking
-│
-└── Archives/                                # Centralized repository zip archives & distributions
-    ├── 02_Practice_Problems/                # Practice 01 & 03 zip bundles
-    ├── 04_Offlines/                         # Offline 01, 02 & 03 starter and submission archives
-    └── README.md                            # Catalog and extraction guide
+└── 05_Project/                              # Term project workspace & documentation
+    ├── CSE 220-ProjectIdeas.csv             # 50+ project ideas catalog
+    └── README.md                            # Project timeline, milestones & tracking
+
 ```
 
----
 
 ## Course Schedule & Curriculum Map
 
 | Week | Topic | Assignments & Milestones |
 | :---: | :--- | :--- |
 | **1** | Python Basics (Environment setup, data structures, loops) | `01_Basics_and_Lectures/01_Python_Basics` |
-| **2** | Advanced NumPy, Matplotlib & Basic Signal Plotting | `01_Basics_and_Lectures/02_Python_Numpy_Matplotlib_Tutorials` |
+| **2** | Advanced NumPy, Matplotlib & Basic Signal Plotting | `01_Basics_and_Lectures/02_Numpy_Matplotlib_Tutorials` |
 | **3–4** | Signal Representation, Shifting, Scaling & Transformations | **Online 1**: Signals & Properties (`03_Onlines/Online_01_Signals_and_Properties`) |
 | **5** | Continuous & Discrete Convolution, LTI Properties | **Offline 1**: Convolution (`04_Offlines/Offline_01_Convolution`) |
 | **6–7** | 2D Convolution & Fourier Series Introduction | **Online 2**: Convolution; **Offline 2 Assigned**; **Project Ideas Assigned** (`06_Project`) |
