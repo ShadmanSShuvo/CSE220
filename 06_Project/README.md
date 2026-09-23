@@ -17,5 +17,4 @@ A curated catalog of 50+ prospective project ideas covering audio processing, sp
 06_Project/
 ├── CSE 220 Project Ideas - Project Ideas.csv  # Project ideas list
 ├── README.md                                  # This guideline document
-└── [project_workspace]/                       # Project source code, reports, and presentation
 ```
