@@ -51,9 +51,9 @@ CSE220/
 │   ├── Offline_02_FS_and_CFT/               # Fourier Series & Continuous Fourier Transform (epicycles, edge detector)
 │   └── Offline_03_DFT_and_FFT/              # Discrete & Fast Fourier Transforms (starter, dev_workspace, submission)
 │
-└── 05_Project/                              # Term project workspace & documentation
-    ├── CSE 220-ProjectIdeas.csv             # 50+ project ideas catalog
-    └── README.md                            # Project timeline, milestones & tracking
+└── 05_Project/                              # Term project: QRSense (github.com/shadmansshuvo/qrsense)
+    ├── CSE220-ProjectIdeas.csv              # 50+ project ideas catalog
+    └── README.md                            # Project overview, repository link & milestone tracking
 
 ```
 
@@ -66,11 +66,11 @@ CSE220/
 | **2** | Advanced NumPy, Matplotlib & Basic Signal Plotting | `01_Basics_and_Lectures/02_Numpy_Matplotlib_Tutorials` |
 | **3–4** | Signal Representation, Shifting, Scaling & Transformations | **Online 1**: Signals & Properties (`03_Onlines/Online_01_Signals_and_Properties`) |
 | **5** | Continuous & Discrete Convolution, LTI Properties | **Offline 1**: Convolution (`04_Offlines/Offline_01_Convolution`) |
-| **6–7** | 2D Convolution & Fourier Series Introduction | **Online 2**: Convolution; **Offline 2 Assigned**; **Project Ideas Assigned** (`06_Project`) |
+| **6–7** | 2D Convolution & Fourier Series Introduction | **Online 2**: Convolution; **Offline 2 Assigned**; **Project Ideas Assigned** (`05_Project`) |
 | **8** | Continuous Fourier Transform (CFT) & Frequency Filtering | **Online 3**: FS & CFT (`03_Onlines/Online_03_FS_and_CFT`) |
 | **9** | Discrete Fourier Transform (DFT), Radix-2 FFT, BigInt Mul | **Offline 3**: DFT & FFT (`04_Offlines/Offline_03_DFT_and_FFT`) |
 | **10** | Frequency Domain Image Processing (Hybrid Images, Phase Swap) | **Online 4**: DFT & FFT (`03_Onlines/Online_04_DFT_and_FFT`) |
-| **11** | Project Progress & Demonstration | **Project Update Milestone** (`06_Project`) |
+| **11** | Project Progress & Demonstration | **Project Update Milestone** (`05_Project` / [QRSense](https://github.com/shadmansshuvo/qrsense)) |
 | **12** | Buffer / Review Week | Comprehensive Review & Exam Preparation |
 | **13** | Sampling Theorem, Filtering, Laplace & Z-Transform | **Online 5**: Sampling & Reconstruction (`03_Onlines/Online_05_Sampling`) |
 | **14** | Final Comprehensive Assessment | **Sessional Quiz Exam** |
